@@ -17,3 +17,4 @@ INSERT INTO Ligne (num, km) VALUES (1, 6);
 INSERT INTO Trajet (immat, ligne, nbtrajets) VALUES ('232 MR 45', 1, 8);
 
 INSERT INTO Ligne (num, km) VALUES (42, 10);
+INSERT INTO Arret (ligne, station, rang) VALUES (42, 10, 1);
