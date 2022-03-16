@@ -30,3 +30,29 @@ INSERT INTO activiteparsite (site, activite) VALUES ('Plage 08', 'Scuba');
 INSERT INTO arretdebus (ligne, horaire) VALUES (42, '10:30:00');
 INSERT INTO dessert_hotel (bus_ligne, bus_horaire, hotel) VALUES (42, '10:30:00', 'hot1');
 INSERT INTO dessert_site (bus_ligne, bus_horaire, site) VALUES (42, '10:30:00', 'hot1');
+
+
+INSERT INTO TypeCuisine (label)  VALUES ('oriental');
+
+INSERT INTO Restaurant (sk, nom, telephone, type_cuisine, hotel, site) VALUES (99, 'restoDuKeur', 30303, 'oriental', 'ParisHilton', 'Roissy');
+
+INSERT INTO Hotel (nom, adresse, codepostal, ville, etoiles) VALUES ('ParisHilton', 'Rue de Belle', '70100', 'Paris', 9);
+
+INSERT INTO SiteTouristique (nom, anciennete)  VALUES ('Roissy', 994);
+
+INSERT INTO Activite (nom) VALUES ('chasse de dragon');
+INSERT INTO Activite (nom) VALUES ('visite de Poudlard'); 
+
+INSERT INTO ActiviteParSite (site, activite) VALUES ('Roissy', 'visite de Poudlard');
+INSERT INTO ActiviteParSite (site, activite) VALUES ('Roissy', 'chasse de dragon');
+
+INSERT INTO ArretDeBus (ligne, horaire) VALUES (7, '23:06');
+INSERT INTO ArretDeBus (ligne, horaire) VALUES (66, '12:15');
+INSERT INTO ArretDeBus (ligne, horaire) VALUES (7, '10:00');
+
+
+INSERT INTO Dessert_Hotel (bus_ligne, bus_horaire, hotel) VALUES (7, '23:06', 'ParisHilton');
+INSERT INTO Dessert_Hotel (bus_ligne, bus_horaire, hotel) VALUES (7, '10:00', 'ParisHilton');
+
+INSERT INTO Dessert_Site (bus_ligne, bus_horaire, site) VALUES (7, '10:00', 'Roissy');
+INSERT INTO Dessert_Site (bus_ligne, bus_horaire, site) VALUES (66, '12:15', 'Roissy');
