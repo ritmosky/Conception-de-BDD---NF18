@@ -21,3 +21,12 @@ INSERT INTO Activite VALUES ('Pedalo');
 INSERT INTO ActiviteParSite VALUES ('Lac Enghien','Pedalo');
 INSERT INTO Dessert_hotel VALUES (16,'8:30','Barriere');
 INSERT INTO Dessert_site VALUES (16,'8:35','Gare Enghien');
+
+INSERT INTO typecuisine (label) VALUES('Italien');
+INSERT INTO SiteTouristique (nom, anciennete) VALUES ('Plage 08', 9999999);
+INSERT INTO restaurant (sk, nom, telephone, type_cuisine, hotel, site) VALUES (4, 'RestoItalie', '0456782312', 'Italien', 'hot1', 'Plage 08');
+INSERT INTO activite (nom) VALUES ('Scuba');
+INSERT INTO activiteparsite (site, activite) VALUES ('Plage 08', 'Scuba');
+INSERT INTO arretdebus (ligne, horaire) VALUES (42, '10:30:00');
+INSERT INTO dessert_hotel (bus_ligne, bus_horaire, hotel) VALUES (42, '10:30:00', 'hot1');
+INSERT INTO dessert_site (bus_ligne, bus_horaire, site) VALUES (42, '10:30:00', 'hot1');
