@@ -30,7 +30,7 @@ INSERT INTO activite (nom) VALUES ('Scuba');
 INSERT INTO activiteparsite (site, activite) VALUES ('Plage 08', 'Scuba');
 INSERT INTO arretdebus (ligne, horaire) VALUES (42, '10:30:00');
 INSERT INTO dessert_hotel (bus_ligne, bus_horaire, hotel) VALUES (42, '10:30:00', 'hot1');
-INSERT INTO dessert_site (bus_ligne, bus_horaire, site) VALUES (42, '10:30:00', 'hot1');
+INSERT INTO dessert_site (bus_ligne, bus_horaire, site) VALUES (42, '10:30:00', 'Plage 08');
 
 
 INSERT INTO TypeCuisine (label)  VALUES ('oriental');
