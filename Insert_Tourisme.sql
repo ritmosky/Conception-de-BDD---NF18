@@ -37,10 +37,9 @@ INSERT INTO TypeCuisine (label)  VALUES ('oriental');
 
 INSERT INTO Hotel (nom, adresse, codepostal, ville, etoiles) VALUES ('ParisHilton', 'Rue de Belle', '70100', 'Paris', 9);
 
-INSERT INTO Restaurant (sk, nom, telephone, type_cuisine, hotel, site) VALUES (99, 'restoDuKeur', 30303, 'oriental', 'ParisHilton', 'Roissy');
-
-
 INSERT INTO SiteTouristique (nom, anciennete)  VALUES ('Roissy', 994);
+
+INSERT INTO Restaurant (sk, nom, telephone, type_cuisine, hotel, site) VALUES (99, 'restoDuKeur', 30303, 'oriental', 'ParisHilton', 'Roissy');
 
 INSERT INTO Activite (nom) VALUES ('chasse de dragon');
 INSERT INTO Activite (nom) VALUES ('visite de Poudlard'); 
