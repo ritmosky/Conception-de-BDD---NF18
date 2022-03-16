@@ -22,7 +22,6 @@ INSERT INTO ActiviteParSite VALUES ('Lac Enghien','Pedalo');
 INSERT INTO Dessert_hotel VALUES (16,'8:30','Barriere');
 INSERT INTO Dessert_site VALUES (16,'8:35','Gare Enghien');
 
-INSERT INTO hotel (nom, adresse, codepostal, ville, etoiles) VALUES ('hot1', '1 rue de Paris', '06200', 'Nice', 3);
 INSERT INTO typecuisine (label) VALUES('Italien');
 INSERT INTO SiteTouristique (nom, anciennete) VALUES ('Plage 08', 9999999);
 INSERT INTO restaurant (sk, nom, telephone, type_cuisine, hotel, site) VALUES (4, 'RestoItalie', '0456782312', 'Italien', 'hot1', 'Plage 08');
