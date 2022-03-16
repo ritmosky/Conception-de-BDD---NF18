@@ -4,7 +4,7 @@ CREATE TABLE ArretDeBus (
     PRIMARY KEY (ligne,horaire)
 );
 
-CREATE TABLE SiteTourustique (
+CREATE TABLE SiteTouristique (
     nom VARCHAR(128),
     anciennete INT,
     PRIMARY KEY (nom)
@@ -19,6 +19,11 @@ CREATE TABLE Hotel (
     PRIMARY KEY (nom)
 );
 
+CREATE TABLE TypeCuisine (
+    label VARCHAR(128),
+    PRIMARY KEY (label)
+);
+
 CREATE TABLE Restaurant (
     sk INT,
     nom VARCHAR(128),
@@ -28,18 +33,13 @@ CREATE TABLE Restaurant (
     site VARCHAR(128),
     
     PRIMARY KEY (sk),
-    FOREIGN KEY (type_cuisine) REFERENCES typeCuisine (label),
+    FOREIGN KEY (type_cuisine) REFERENCES TypeCuisine (label),
     FOREIGN KEY (hotel) REFERENCES Hotel (nom),
-    FOREIGN KEY (site) REFERENCES SiteTourustique (nom),
+    FOREIGN KEY (site) REFERENCES SiteTouristique (nom),
     
     CHECK (nom!=NULL),
     UNIQUE (telephone),
     CHECK (type_cuisine!=NULL)
-);
-
-CREATE TABLE TypeCuisine (
-    label VARCHAR(128),
-    PRIMARY KEY (label)
 );
 
 CREATE TABLE Activite (
