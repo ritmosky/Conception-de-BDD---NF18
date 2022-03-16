@@ -63,8 +63,7 @@ CREATE TABLE Dessert_hotel (
 
     PRIMARY KEY (bus_ligne, bus_horaire, hotel),
     
-    FOREIGN KEY (bus_ligne) REFERENCES ArretDeBus (ligne),
-    FOREIGN KEY (bus_horaire) REFERENCES ArretDeBus (horaire),
+    FOREIGN KEY (bus_ligne,bus_horaire) REFERENCES ArretDeBus (ligne,horaire),
     FOREIGN KEY (hotel) REFERENCES Hotel (nom)
 );
 
@@ -75,8 +74,7 @@ CREATE TABLE Dessert_site (
     
     PRIMARY KEY (bus_ligne, bus_horaire, site),
     
-    FOREIGN KEY (bus_ligne) REFERENCES ArretDeBus (ligne),
-    FOREIGN KEY (bus_horaire) REFERENCES ArretDeBus (horaire),
+    FOREIGN KEY (bus_ligne,bus_horaire) REFERENCES ArretDeBus (ligne,horaire),
     FOREIGN KEY (site) REFERENCES SiteTouristique (nom)
 );
 
