@@ -7,3 +7,17 @@ INSERT INTO Activite (nom) VALUES ('Parachutisme');
 INSERT INTO ActiviteParSite (site, activite) VALUES ('monument du requin en eau douce', 'Parachutisme');
 INSERT INTO Dessert_hotel (bus_ligne, bus_horaire, hotel) VALUES (932, '14:15', 'Lebrazero');
 INSERT INTO Dessert_site (bus_ligne, bus_horaire, site) VALUES (932, '14:15', 'monument du requin en eau douce');
+
+INSERT INTO ArretDeBus VALUES (16,'8:30');
+INSERT INTO ArretDeBus VALUES (16,'8:35');
+INSERT INTO SiteTouristique VALUES ('Lac Enghien', 200);
+INSERT INTO SiteTouristique VALUES ('Gare Enghien', 100);
+INSERT INTO Hotel VALUES ('Barriere','85 Rue du Général de Gaulle', '95880', 'Enghien-les-bains', 4);
+INSERT INTO TypeCuisine VALUES ('Vietnamien');
+INSERT INTO TypeCuisine VALUES ('Francaise');
+INSERT INTO Restaurant VALUES (1,'Hanoi','0139348630','Vietnamien',NULL,'Gare Enghien');
+INSERT INTO Restaurant VALUES (2, 'Fouquets', '0134121122','Francaise','Barriere','Lac Enghien');
+INSERT INTO Activite VALUES ('Pedalo');
+INSERT INTO ActiviteParSite VALUES ('Lac Enghien','Pedalo');
+INSERT INTO Dessert_hotel VALUES (16,'8:30','Barriere');
+INSERT INTO Dessert_site VALUES (16,'8:35','Gare Enghien');
