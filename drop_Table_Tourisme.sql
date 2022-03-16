@@ -1,0 +1,9 @@
+drop table Dessert_site;
+drop table Dessert_hotel;
+drop table ActiviteParSite;
+drop table Activite;
+drop table Restaurant;
+drop table TypeCuisine;
+drop table Hotel;
+drop table SiteTouristique;
+drop table ArretDeBus;
