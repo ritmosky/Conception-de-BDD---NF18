@@ -1,4 +1,3 @@
-
 CREATE TABLE Dessert_site (
 bus_ligne INT),
 bus_horaire TIME,
