@@ -10,7 +10,7 @@ INSERT INTO Conducteur (matricule, nom, prenom) VALUES ('ef', 'John', 'Doe');
 INSERT INTO Conducteur (matricule, nom, prenom) VALUES ('gg', 'Robin', 'Batman');
 
 INSERT INTO Bus (immat, type, kilometrage, matricule) VALUES ('5657 MA 49', 'Normaux', 27, 'abcd');
-INSERT INTO Bus (immat, type, kilometrage, matricule) VALUES ('666 XX 60', 'Normaux', 12 'ef');
+INSERT INTO Bus (immat, type, kilometrage, matricule) VALUES ('666 XX 60', 'Normaux', 12, 'ef');
 INSERT INTO Bus (immat, type, kilometrage, matricule) VALUES ('232 MR 45', 'Soufflets', 34, 'gg');
 
 INSERT INTO Ligne (num, km) VALUES (1, 6);
