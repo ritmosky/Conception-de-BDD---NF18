@@ -1,0 +1,40 @@
+OUEDRAOGO Taoufiq
+VERGNOL Calliste
+HAFIZ Adam
+
+
+
+
+TRANSFORMATIONS D’HÉRITAGE
+
+
+- Operation :
+
+
+- Compte : 
+
+
+
+
+MLD
+
+
+Client()
+
+Compte()
+Asso_Compte_Client()
+
+CompteEpargne()
+CompteRevolving()
+CompteCourant()
+Operation()
+
+CarteBleu()
+EmissionCheque()
+DepotCheque()
+Virement()
+CreditGuichet()
+DebitGuichet()
+
+
+
