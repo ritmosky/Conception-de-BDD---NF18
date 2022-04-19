@@ -1,0 +1,32 @@
+OUEDRAOGO Taoufiq
+VERGNOL Calliste
+HAFIZ Adam
+
+
+
+			
+NOTE DE CLARIFICATION
+
+
+
+
+
+Afin d’avoir une compréhension commune du travail demandé, nous avons clarifié certains points : 
+
+
+
+1. Un client doit posséder au moins un compte à la banque pour être client. Ce choix a été fait délibérément. Ainsi si une personne ferme son dernier compte, il ne sera plus considéré comme client.
+
+2. Nous décidons qu’un virement est un type d’opération.
+ 
+3. Un crédit de carte bleu signifie qu’on ne peut que retirer de l’argent avec une carte bleue.
+
+4. La méthode operationpossible() de la classe Operation permet de savoir si le statut du compte correspondant et sa balance permettent l’opération. Dans le cas échéant, l’opération est effectuée et l’état devient <<traité>>.
+
+5. Nous choisissons que le montant d’une opération doit être strictement positif.
+
+6. Pour lever l'ambiguïté pesant sur le solde et la balance, nous avons décidé de considérer que le solde est égal à la balance et donc d’enlever tous les attributs soldes des classes filles CompteRevolving, CompteCourant et CompteEpargne.
+
+7. Les intérêts journaliers du compte de revolving seront ajoutés à la balance du compte chaque jour.
+
+8. Toutes les valeurs mensuelles de solde minimum et maximum du compte courant seront stockées. Et à chaque nouveau mois, les valeurs seront changées.
