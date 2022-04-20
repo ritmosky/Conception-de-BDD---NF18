@@ -1,0 +1,5 @@
+
+- remplacer les 2 méthodes retirer(), deposer() de Compte par une seule méthode deplacer()
+- enlever l'attribut type:enum dans Compte
+- ajouter attribut solde_min_const dans CompteEpargne
+- ajouter une contrainte textuelle sur le fait qu'un compte ne puisse pas effectuer plusieurs opérations en même temps
