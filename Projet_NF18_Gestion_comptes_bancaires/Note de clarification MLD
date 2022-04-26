@@ -1,0 +1,31 @@
+OUEDRAOGO Taoufiq
+VERGNOL Calliste
+HAFIZ Adam
+
+
+
+
+## NOTE DE CLARIFICATION MLD ##
+
+
+- On suppose ici que tous les attributs sont NOT NULL par défaut
+- On estime que le type Date n’est pas assez précis dans l’attribut date_crea de la classe Compte car deux comptes pourraient être créés en même temps. Donc nous changeons ce type en DateTime. Ainsi, deux comptes ne peuvent plus être créés en même temps et l’attribut date_crea est unique.
+
+
+Operation : 
+
+On ne peut pas faire d’héritage par la classe mère car l’héritage est non complet et les classes filles sont du côté * dans des associations 1—* (avec CompteEpargne, CompteRevolving, CompteCourant). 
+On ne peut également pas faire héritage par les classes filles car la classe mère est du côté * dans une association 1—* (avec Compte et Client)
+On fera donc un héritage par référence avec classe mère abstraite
+Comme la classe opération n’a pas de clef, nous en créons une artificielle : id.
+
+
+
+Compte : 
+
+L’héritage est non complet → on exclut l’héritage par la classe mère
+on ne peut pas effectuer d’héritage par les classes filles à cause de l’association Compte 1* — 1* Client
+On fera donc un héritage par référence avec classe mère abstraite
+
+
+
