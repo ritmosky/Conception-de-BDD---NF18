@@ -9,7 +9,7 @@ CREATE TABLE Client (
 
 CREATE TABLE Compte (
     date_crea TIMESTAMP, 
-    balance FLOAT NOT NULL, 
+    balance FLOAT NOT NULL UNIQUE, 
     statut VARCHAR(6) NOT NULL,
 
     CHECK (statut='ouvert' OR statut='bloqué' OR statut='fermé') ,
@@ -30,7 +30,7 @@ CREATE TABLE Asso_Compte_Client (
 
 CREATE TABLE CompteEpargne (
     date_crea TIMESTAMP,
-    balance FLOAT NOT NULL,
+    balance FLOAT,
     solde_min_const FLOAT NOT NULL,
 
     CHECK (balance > solde_min_const),
@@ -43,7 +43,7 @@ CREATE TABLE CompteEpargne (
 
 CREATE TABLE CompteRevolving (
     date_crea TIMESTAMP,
-    balance FLOAT NOT NULL,
+    balance FLOAT,
     taux_j FLOAT NOT NULL,
     montant_min FLOAT NOT NULL,
 
@@ -59,7 +59,7 @@ CREATE TABLE CompteRevolving (
 
 CREATE TABLE CompteCourant (
     date_crea TIMESTAMP,
-    balance FLOAT NOT NULL,
+    balance FLOAT,
     montant_decouvert_autorise FLOAT,
     max_solde FLOAT NOT NULL,
     min_solde FLOAT NOT NULL,
