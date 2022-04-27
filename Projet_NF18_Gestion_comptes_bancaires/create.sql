@@ -30,7 +30,7 @@ CREATE TABLE Asso_Compte_Client (
 
 CREATE TABLE CompteEpargne (
     date_crea TIMESTAMP,
-    balance FLOAT,
+    balance FLOAT NOT NULL,
     solde_min_const FLOAT NOT NULL,
 
     CHECK (balance > solde_min_const),
@@ -43,7 +43,7 @@ CREATE TABLE CompteEpargne (
 
 CREATE TABLE CompteRevolving (
     date_crea TIMESTAMP,
-    balance FLOAT,
+    balance FLOAT NOT NULL,
     taux_j FLOAT NOT NULL,
     montant_min FLOAT NOT NULL,
 
@@ -60,7 +60,7 @@ CREATE TABLE CompteRevolving (
 
 CREATE TABLE CompteCourant (
     date_crea TIMESTAMP,
-    balance FLOAT,
+    balance FLOAT NOT NULL,
     montant_decouvert_autorise FLOAT,
     max_solde FLOAT NOT NULL,
     min_solde FLOAT NOT NULL,
