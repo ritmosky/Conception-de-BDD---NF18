@@ -19,7 +19,7 @@ if choice == 1:
     cursor = connection.cursor()
 
     # Execute a SQL SELECT command
-    sql = "\copy Client (tel, nom, adresse) FROM 'data/projet/client.csv' WITH CSV DELIMITER ';' QUOTE '\"'"
+    sql = "\copy Client (tel, nom, adresse) FROM './client.csv' WITH CSV DELIMITER ';' QUOTE '\"'"
     cursor.execute(sql)
 
 choice = input("Voulez-vous afficher la table client ? [y/n] ")
