@@ -95,9 +95,9 @@ CREATE TABLE Operation (
 
 CREATE TABLE DebitGuichet (
     id  INT,
-    compteCourant DATE,
-    compteRevolving DATE,
-    compteEpargne DATE,
+    compteCourant TIMESTAMP,
+    compteRevolving TIMESTAMP,
+    compteEpargne TIMESTAMP,
 
     PRIMARY KEY(id),
     FOREIGN KEY (id) REFERENCES Operation(id),
@@ -109,9 +109,9 @@ CREATE TABLE DebitGuichet (
 
 CREATE TABLE CreditGuichet (
     id  INT,
-    compteCourant DATE,
-    compteRevolving DATE,
-    compteEpargne DATE,
+    compteCourant TIMESTAMP,
+    compteRevolving TIMESTAMP,
+    compteEpargne TIMESTAMP,
 
     PRIMARY KEY(id),
     FOREIGN KEY (id) REFERENCES Operation(id),
@@ -123,9 +123,9 @@ CREATE TABLE CreditGuichet (
 
 CREATE TABLE Virement (
     id  INT,
-    compteCourant DATE,
-    compteRevolving DATE,
-    compteEpargne DATE,
+    compteCourant TIMESTAMP,
+    compteRevolving TIMESTAMP,
+    compteEpargne TIMESTAMP,
 
     PRIMARY KEY(id),
     FOREIGN KEY (id) REFERENCES Operation(id),
@@ -137,8 +137,8 @@ CREATE TABLE Virement (
 
 CREATE TABLE DepotCheque (
     id  INT,
-    compteCourant DATE,
-    compteRevolving DATE,
+    compteCourant TIMESTAMP,
+    compteRevolving TIMESTAMP,
 
     PRIMARY KEY(id),
     FOREIGN KEY (id) REFERENCES Operation(id),
@@ -149,8 +149,8 @@ CREATE TABLE DepotCheque (
 
 CREATE TABLE EmissionCheque (
     id  INT,
-    compteCourant DATE,
-    compteRevolving DATE,
+    compteCourant TIMESTAMP,
+    compteRevolving TIMESTAMP,
 
     PRIMARY KEY(id),
     FOREIGN KEY (id) REFERENCES Operation(id),
@@ -161,8 +161,8 @@ CREATE TABLE EmissionCheque (
 
 CREATE TABLE CarteBleu (
     id  INT,
-    compteCourant DATE,
-    compteRevolving DATE,
+    compteCourant TIMESTAMP,
+    compteRevolving TIMESTAMP,
 
     PRIMARY KEY(id),
     FOREIGN KEY (id) REFERENCES Operation(id),
