@@ -68,7 +68,6 @@ CREATE TABLE CompteCourant (
     CHECK (balance > min_solde AND balance < max_solde),
     CHECK (max_solde > 0),
     CHECK (min_solde > 0),
-    CHECK (montant_min > balance),
     
     PRIMARY KEY(date_crea),
     FOREIGN KEY (date_crea) REFERENCES Compte(date_crea),
@@ -84,7 +83,7 @@ CREATE TABLE Operation (
     client INT,
     date_crea TIMESTAMP,
 
-    CHECK etat IN ('traité', 'non traité'),
+    CHECK (etat='traité' OR etat='non traité'),
     CHECK (montant > 0),
 
     UNIQUE(client, date_crea),
