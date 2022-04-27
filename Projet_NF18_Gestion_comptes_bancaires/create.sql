@@ -19,3 +19,149 @@ CREATE TABLE Asso_Compte_Client (
     FOREIGN KEY (tel) REFERENCES Client(tel),
     FOREIGN KEY (date_crea) REFERENCES Compte(date_crea)
 );
+
+CREATE TABLE CompteEpargne(
+    date_crea TIMESTAMP,
+    balance FLOAT,
+    solde_min_const FLOAT NOT NULL,
+
+    CHECK (balance > solde_min_const),
+
+    PRIMARY KEY(date_crea),
+    FOREIGN KEY (date_crea) REFERENCES Compte(date_crea),
+    FOREIGN KEY (balance) REFERENCES Compte(balance)
+);
+
+
+CREATE TABLE CompteRevolving(
+    date_crea TIMESTAMP,
+    balance FLOAT,
+    taux_j FLOAT NOT NULL,
+    montant_min FLOAT NOT NULL,
+
+    CHECK (balance > solde_min_const),
+    CHECK (taux_j > 0 AND taux_j < 1),
+    CHECK (montant_min < 0),
+    CHECK (montant_min > balance),
+    
+    PRIMARY KEY(date_crea),
+    FOREIGN KEY (date_crea) REFERENCES Compte(date_crea),
+    FOREIGN KEY (balance) REFERENCES Compte(balance)
+);
+
+
+CREATE TABLE CompteCourant(
+    date_crea TIMESTAMP,
+    balance FLOAT,
+    montant_decouvert_autorise FLOAT,
+    max_solde FLOAT NOT NULL,
+    min_solde FLOAT NOT NULL,
+    date_debut_decouvert DATE,
+
+    CHECK (balance > min_solde AND balance < max_solde),
+    CHECK (max_solde > 0),
+    CHECK (min_solde > 0),
+    CHECK (montant_min > balance),
+    
+    PRIMARY KEY(date_crea),
+    FOREIGN KEY (date_crea) REFERENCES Compte(date_crea),
+    FOREIGN KEY (balance) REFERENCES Compte(balance)
+);
+
+
+
+
+
+CREATE TABLE Operation(
+    id INT,
+    montant FLOAT NOT NULL,
+    date DATE NOT NULL,
+    etat VARCHAR(11) NOT NULL,
+    client INT,
+    date_crea TIMESTAMP,
+
+    CHECK etat IN ('traité', 'non traité'),
+    CHECK (montant > 0),
+
+    UNIQUE(client, date_crea),
+    PRIMARY KEY(id),
+    FOREIGN KEY (client) REFERENCES Client(tel),
+    FOREIGN KEY (date_crea) REFERENCES Compte(date_crea)
+);
+
+
+CREATE TABLE DebitGuichet(
+    id  INT,
+    compteCourant DATE,
+    compteRevolving DATE,
+    compteEpargne DATE,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY (id) REFERENCES Operation(id),
+    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
+    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea),
+    FOREIGN KEY (compteEpargne) REFERENCES CompteEpargne(date_crea)
+);
+
+
+CREATE TABLE CreditGuichet(
+    id  INT,
+    compteCourant DATE,
+    compteRevolving DATE,
+    compteEpargne DATE,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY (id) REFERENCES Operation(id),
+    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
+    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea),
+    FOREIGN KEY (compteEpargne) REFERENCES CompteEpargne(date_crea)
+);
+
+
+CREATE TABLE Virement(
+    id  INT,
+    compteCourant DATE,
+    compteRevolving DATE,
+    compteEpargne DATE,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY (id) REFERENCES Operation(id),
+    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
+    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea),
+    FOREIGN KEY (compteEpargne) REFERENCES CompteEpargne(date_crea)
+);
+
+
+CREATE TABLE DepotCheque(
+    id  INT,
+    compteCourant DATE,
+    compteRevolving DATE,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY (id) REFERENCES Operation(id),
+    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
+    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea),
+);
+
+CREATE TABLE EmissionCheque(
+    id  INT,
+    compteCourant DATE,
+    compteRevolving DATE,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY (id) REFERENCES Operation(id),
+    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
+    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea)
+);
+
+
+CREATE TABLE CarteBleu(
+    id  INT,
+    compteCourant DATE,
+    compteRevolving DATE,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY (id) REFERENCES Operation(id),
+    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
+    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea)
+);
