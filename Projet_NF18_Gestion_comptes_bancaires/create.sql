@@ -2,6 +2,7 @@ CREATE TABLE Client (
     tel INTEGER, 
     nom VARCHAR(25) NOT NULL, 
     adresse VARCHAR(150) NOT NULL, 
+
     PRIMARY KEY (tel)
 );   
 
