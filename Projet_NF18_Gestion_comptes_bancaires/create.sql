@@ -143,7 +143,7 @@ CREATE TABLE DepotCheque (
     PRIMARY KEY(id),
     FOREIGN KEY (id) REFERENCES Operation(id),
     FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
-    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea),
+    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea)
 );
 
 
