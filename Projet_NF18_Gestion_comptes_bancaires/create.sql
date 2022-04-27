@@ -5,22 +5,29 @@ CREATE TABLE Client (
     PRIMARY KEY (tel)
 );   
 
+
 CREATE TABLE Compte (
     date_crea TIMESTAMP, 
     balance FLOAT NOT NULL, 
-    statut VARCHAR(6) CHECK (statut='ouvert' OR statut='bloqué' OR statut='fermé') NOT NULL,
+    statut VARCHAR(6) NOT NULL,
+
+    CHECK (statut='ouvert' OR statut='bloqué' OR statut='fermé') ,
+
     PRIMARY KEY (date_crea)
 );
+
 
 CREATE TABLE Asso_Compte_Client (
     tel INTEGER,
     date_crea TIMESTAMP,
+
     PRIMARY KEY (tel, date_crea),
     FOREIGN KEY (tel) REFERENCES Client(tel),
     FOREIGN KEY (date_crea) REFERENCES Compte(date_crea)
 );
 
-CREATE TABLE CompteEpargne(
+
+CREATE TABLE CompteEpargne (
     date_crea TIMESTAMP,
     balance FLOAT,
     solde_min_const FLOAT NOT NULL,
@@ -33,7 +40,7 @@ CREATE TABLE CompteEpargne(
 );
 
 
-CREATE TABLE CompteRevolving(
+CREATE TABLE CompteRevolving (
     date_crea TIMESTAMP,
     balance FLOAT,
     taux_j FLOAT NOT NULL,
@@ -50,7 +57,7 @@ CREATE TABLE CompteRevolving(
 );
 
 
-CREATE TABLE CompteCourant(
+CREATE TABLE CompteCourant (
     date_crea TIMESTAMP,
     balance FLOAT,
     montant_decouvert_autorise FLOAT,
@@ -69,10 +76,7 @@ CREATE TABLE CompteCourant(
 );
 
 
-
-
-
-CREATE TABLE Operation(
+CREATE TABLE Operation (
     id INT,
     montant FLOAT NOT NULL,
     date DATE NOT NULL,
@@ -90,7 +94,7 @@ CREATE TABLE Operation(
 );
 
 
-CREATE TABLE DebitGuichet(
+CREATE TABLE DebitGuichet (
     id  INT,
     compteCourant DATE,
     compteRevolving DATE,
@@ -104,7 +108,7 @@ CREATE TABLE DebitGuichet(
 );
 
 
-CREATE TABLE CreditGuichet(
+CREATE TABLE CreditGuichet (
     id  INT,
     compteCourant DATE,
     compteRevolving DATE,
@@ -118,7 +122,7 @@ CREATE TABLE CreditGuichet(
 );
 
 
-CREATE TABLE Virement(
+CREATE TABLE Virement (
     id  INT,
     compteCourant DATE,
     compteRevolving DATE,
@@ -132,7 +136,7 @@ CREATE TABLE Virement(
 );
 
 
-CREATE TABLE DepotCheque(
+CREATE TABLE DepotCheque (
     id  INT,
     compteCourant DATE,
     compteRevolving DATE,
@@ -143,7 +147,8 @@ CREATE TABLE DepotCheque(
     FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea),
 );
 
-CREATE TABLE EmissionCheque(
+
+CREATE TABLE EmissionCheque (
     id  INT,
     compteCourant DATE,
     compteRevolving DATE,
@@ -155,7 +160,7 @@ CREATE TABLE EmissionCheque(
 );
 
 
-CREATE TABLE CarteBleu(
+CREATE TABLE CarteBleu (
     id  INT,
     compteCourant DATE,
     compteRevolving DATE,
