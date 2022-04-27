@@ -9,12 +9,12 @@ CREATE TABLE Client (
 
 CREATE TABLE Compte (
     date_crea TIMESTAMP, 
-    balance FLOAT NOT NULL UNIQUE, 
     statut VARCHAR(6) NOT NULL,
 
     CHECK (statut='ouvert' OR statut='bloqué' OR statut='fermé') ,
 
     PRIMARY KEY (date_crea)
+
 );
 
 
@@ -30,20 +30,19 @@ CREATE TABLE Asso_Compte_Client (
 
 CREATE TABLE CompteEpargne (
     date_crea TIMESTAMP,
-    balance FLOAT,
+    balance FLOAT NOT NULL,
     solde_min_const FLOAT NOT NULL,
 
     CHECK (balance > solde_min_const),
 
     PRIMARY KEY(date_crea),
-    FOREIGN KEY (date_crea) REFERENCES Compte(date_crea),
-    FOREIGN KEY (balance) REFERENCES Compte(balance)
+    FOREIGN KEY (date_crea) REFERENCES Compte(date_crea)
 );
 
 
 CREATE TABLE CompteRevolving (
     date_crea TIMESTAMP,
-    balance FLOAT,
+    balance FLOAT NOT NULL,
     taux_j FLOAT NOT NULL,
     montant_min FLOAT NOT NULL,
 
@@ -52,14 +51,13 @@ CREATE TABLE CompteRevolving (
     CHECK (montant_min > balance),
     
     PRIMARY KEY(date_crea),
-    FOREIGN KEY (date_crea) REFERENCES Compte(date_crea),
-    FOREIGN KEY (balance) REFERENCES Compte(balance)
+    FOREIGN KEY (date_crea) REFERENCES Compte(date_crea)
 );
 
 
 CREATE TABLE CompteCourant (
     date_crea TIMESTAMP,
-    balance FLOAT,
+    balance FLOAT NOT NULL,
     montant_decouvert_autorise FLOAT,
     max_solde FLOAT NOT NULL,
     min_solde FLOAT NOT NULL,
@@ -70,8 +68,7 @@ CREATE TABLE CompteCourant (
     CHECK (min_solde > 0),
     
     PRIMARY KEY(date_crea),
-    FOREIGN KEY (date_crea) REFERENCES Compte(date_crea),
-    FOREIGN KEY (balance) REFERENCES Compte(balance)
+    FOREIGN KEY (date_crea) REFERENCES Compte(date_crea)
 );
 
 
