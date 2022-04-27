@@ -1,6 +1,3 @@
-DROP TABLE Client;
-DROP TABLE Compte;
-DROP TABLE Asso_Compte_Client;
 DROP TABLE CompteEpargne;
 DROP TABLE CompteRevolving;
 DROP TABLE CompteCourant;
@@ -11,3 +8,6 @@ DROP TABLE Virement;
 DROP TABLE DepotCheque;
 DROP TABLE EmissionCheque;
 DROP TABLE CarteBleu;
+DROP TABLE Asso_Compte_Client;
+DROP TABLE Client;
+DROP TABLE Compte;
