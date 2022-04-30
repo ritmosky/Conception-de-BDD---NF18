@@ -9,7 +9,7 @@ CREATE TABLE Client (
 
 CREATE TABLE Compte (
     date_crea TIMESTAMP, 
-    statut VARCHAR(6) NOT NULL,
+    statut VARCHAR(8) NOT NULL,
 
     CHECK (statut='ouvert' OR statut='bloqué' OR statut='fermé') ,
 
