@@ -302,16 +302,17 @@ def add_account_type(conn):
     print("\n -- Ajouter un type de compte --\n")
     a_type = print_account_type()
     date_crea = quote(input(" date de création aaaa-mm-jj hh:mm = "))
-    if a_type=="CompteEpargne":
-        constraint_type_account(date_crea, a_type)
-        Epargne(a_type, date_crea)
-    if a_type=="CompteRevolving":
-        constraint_type_account(date_crea, a_type)
-        Revolving(a_type, date_crea)
-    if a_type=="CompteCourant":
-        constraint_type_account(date_crea, a_type)
-        Courant(a_type, date_crea)
-
+    if constraint_type_account(date_crea, a_type):
+        if a_type=="CompteEpargne":
+            constraint_type_account(date_crea, a_type)
+            Epargne(a_type, date_crea)
+        if a_type=="CompteRevolving":
+            constraint_type_account(date_crea, a_type)
+            Revolving(a_type, date_crea)
+        if a_type=="CompteCourant":
+            Courant(a_type, date_crea)
+    else:
+        print("/!\ Ce compte a déjà un type /!\")
 
 
 ########## MENU ##########
