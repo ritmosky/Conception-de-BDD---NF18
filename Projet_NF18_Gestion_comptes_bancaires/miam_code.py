@@ -34,11 +34,13 @@ except psycopg2.OperationalError as e:
     print("message système : ", e)
 
 
+
 ########## INITIALIZATION ##########
 
 
 #
-path = input('chemin du dossier où stocker les données(.../.../dossier) : ')
+path = 'documents/school/utc/sem02/nf18/projet_nf18'
+#input('chemin du dossier où stocker les données(.../.../dossier) : ')
 
 
 # create tables ->
@@ -390,7 +392,7 @@ RESTE A CODER
 
 
 
-########## Enregistrer dans un fichier CSV les tables ##########
+########## Enregistrer les tables dans un fichier CSV  ##########
 
 dico = {
 'Client_col' : ["tel", "nom", "adresse"],
@@ -399,16 +401,14 @@ dico = {
 'CompteEpargne_col' : ['date_crea', 'balance', 'solde_min_const'],
 'CompteRevolving_col' : ['date_crea', 'balance', 'taux_j', 'montant_min'],
 'CompteCourant_col' : ['date_crea', 'balance', 'montant_decouvert_autorise','max_solde' ,'min_solde', 'date_debut_decouvert']
+'Operation_col' : ['id', 'montant', 'date', 'etat', 'client', 'date_crea'],
+'DebitGuichet_col' : ['id', 'compteCourant', 'compteRevolving', 'compteEpargne'],
+'CreditGuichet_col' : ['id', 'compteCourant', 'compteRevolving', 'compteEpargne'],
+'Virement_col' : ['id', 'compteCourant', 'compteRevolving', 'compteEpargne'],
+'DepotCheque_col' : ['id', 'compteCourant', 'compteRevolving'],
+'EmissionCheque_col' : ['id', 'compteCourant', 'compteRevolving'],
+'CarteBleu_col' : ['id', 'compteCourant', 'compteRevolving']
 }
-
-# 'Operation_col' : ['id', 'montant', 'date', 'etat', 'client', 'date_crea'],
-# 'DebitGuichet_col' : ['id', 'compteCourant', 'compteRevolving', 'compteEpargne'],
-# 'CreditGuichet_col' : ['id', 'compteCourant', 'compteRevolving', 'compteEpargne'],
-# 'Virement_col' : ['id', 'compteCourant', 'compteRevolving', 'compteEpargne'],
-# 'DepotCheque_col' : ['id', 'compteCourant', 'compteRevolving'],
-# 'EmissionCheque_col' : ['id', 'compteCourant', 'compteRevolving'],
-# 'CarteBleu_col' : ['id', 'compteCourant', 'compteRevolving']
-# }
 
 
 def save_csv(chemin):
