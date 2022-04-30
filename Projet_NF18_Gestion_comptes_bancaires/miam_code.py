@@ -27,6 +27,7 @@ PASSWORD = "secret"
 DATABASE = "projetdb"
 
 
+
 try:
     conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABASE, USER, PASSWORD))
 except psycopg2.ProgrammingError as e:
@@ -76,6 +77,7 @@ for file in glob.glob(path + "/*.csv"):
 
 
 ########## Enregistrer les tables dans un fichier CSV  ##########
+
 
 
 # dictionnaire des attributs des différentes tables
@@ -199,7 +201,7 @@ def add_customer(conn):
 
     try:
         cur = conn.cursor()
-        sql = "INSERT INTO Client(tel,nom,adresse) VALUES (%i,%s,%s)" % (tel, nom, adresse)
+        sql = "INSERT INTO Client VALUES ({},{},{})".format(tel, nom, adresse)
         cur.execute(sql)
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
@@ -214,7 +216,7 @@ def add_account(conn):
 
     try:
         cur = conn.cursor()
-        sql = "INSERT INTO Compte(date_crea,statut) VALUES (%s,%s)" % (date_crea, statut)
+        sql = "INSERT INTO Compte VALUES ({},{})".format(date_crea, statut)
         cur.execute(sql)
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
@@ -229,7 +231,7 @@ def add_owner(conn):
 
     try:
         cur = conn.cursor()
-        sql = "INSERT INTO Asso_Compte_Client(tel,date_crea) VALUES (%s,%s)" % (tel,date_crea)
+        sql = "INSERT INTO Asso_Compte_Client VALUES ({},{})".format(tel,date_crea)
         cur.execute(sql)
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
@@ -239,11 +241,11 @@ def add_owner(conn):
 # Compte Epargne
 def Epargne(a_type, date_crea):
     print("\n ## Ajouter un compte Epargne\n")
-    solde_min_const = float(input(" solde minimum statuaire (>0) : "))
-    balance = float(input(" balance (>solde_min_const): "))
+    balance = float(input(" balance (>0): "))
+    solde_min_const = float(input(" solde minimum statuaire entre [0;balance]) : "))
     try:
         cur = conn.cursor()
-        sql = "INSERT INTO %s(date_crea, balance, solde_min_const) VALUES (%s, %f, %f)" % (a_type, date_crea, balance, solde_min_const)
+        sql = "INSERT INTO {} VALUES ({},{},{})".format(a_type, date_crea, balance, solde_min_const)
         cur.execute(sql)
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
@@ -253,12 +255,13 @@ def Epargne(a_type, date_crea):
 # Compte Revolving
 def Revolving(a_type, date_crea):
     print("\n ## Ajouter un compte Revolving\n")
+    balance = float(input(" balance (<0) : "))
     taux_j = float(input(" taux journalier entre ]0;1[ : "))
-    montant_min = float(input(" solde minimum (<0) : "))
-    balance = float(input(" balance entre [solde min;0] : "))
+    montant_min = float(input(" prêt minimum (<balance) : "))
+    
     try:
         cur = conn.cursor()
-        sql = "INSERT INTO %s(date_crea, balance, taux_j, montant_min) VALUES (%s, %f, %f, %f)" % (a_type, date_crea, balance, taux_j, montant_min)
+        sql = "INSERT INTO {} VALUES ({},{},{},{})".format(a_type, date_crea, balance, taux_j, montant_min)
         cur.execute(sql)
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
@@ -268,14 +271,14 @@ def Revolving(a_type, date_crea):
 # Compte Courant
 def Courant(a_type, date_crea):
     print("\n ## Ajouter un compte Courant\n")
-    dec_autorise = quote(input(" montant du découvert autorisé ou sinon Null : "))
-    max_solde = float(input(" solde maximum (>0) : "))
-    min_solde = float(input(" solde minimum (>0) : "))
-    balance = float(input(" balance entre [solde min, solde max] : "))
-    debut_decouvert = quote(input(" début du découvert aaaa-mm-jj hh:mm ou sinon Null = "))
+    balance = float(input(" balance (>0) : "))
+    dec_autorise = quote(input(" montant du découvert autorisé (>=0) ou nullable : "))
+    max_solde = float(input(" balance maximum (>0) : "))
+    min_solde = float(input(" balance minimum (>0) : "))
+    debut_decouvert = quote(input(" début du découvert aaaa-mm-jj hh:mm ou nullable = "))
     try:
         cur = conn.cursor()
-        sql = "INSERT INTO %s(date_crea, balance, montant_decouvert_autorise, max_solde, min_solde, date_debut_decouvert) VALUES (%s, %f, %f, %f, %f, %s)" % (a_type, date_crea, balance, dec_autorise, max_solde, min_solde, debut_decouvert)
+        sql = "INSERT INTO {} VALUES ({},{},{},{},{},{})".format(a_type, date_crea, balance, dec_autorise, max_solde, min_solde, debut_decouvert)
         cur.execute(sql)
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
@@ -301,7 +304,7 @@ def print_account_type():
 def add_account_type(conn):
     print("\n -- Ajouter un type de compte --\n")
     a_type = print_account_type()
-    date_crea = quote(input(" date de création aaaa-mm-jj hh:mm = "))
+    date_crea = quote(input("\n date de création aaaa-mm-jj hh:mm = "))
     if constraint_type_account(date_crea, a_type):
         if a_type=="CompteEpargne":
             constraint_type_account(date_crea, a_type)
@@ -312,7 +315,66 @@ def add_account_type(conn):
         if a_type=="CompteCourant":
             Courant(a_type, date_crea)
     else:
-        print("/!\ Ce compte a déjà un type /!\")
+        print("\n /!\ Ce compte a déjà un type /!\ ")
+
+
+
+########## Afficher ##########
+
+
+
+# afficher tous les clients
+def display_all_customer(conn):
+    print("\n ## Afficher tous les clients \n\n")
+    try:
+        cur = conn.cursor()
+        sql = "SELECT * FROM Client"
+        cur.execute(sql)
+        res = cur.fetchone()
+        if res==None:
+            print("/!\ AUCUN CLIENT /!\\")
+        while res:
+            print(" - tel : {} | nom : {} | adresse : {}".format(res[0],res[1],res[2]))
+            res = cur.fetchone()
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
+
+
+
+# afficher tous les comptes
+def display_all_account(conn):
+    print("\n ## Afficher tous les comptes \n")
+    try:
+        cur = conn.cursor()
+        sql = "SELECT * FROM Compte"
+        cur.execute(sql)
+        res = cur.fetchone()
+        if res==None:
+            print("/!\ AUCUN COMPTE /!\\")
+        while res:
+            print(" - date création : {} | statut : {} ".format(res[0],res[1]))
+            res = cur.fetchone()
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
+
+
+
+# afficher tous les propriétaires
+def display_all_owner(conn):
+    print("\n ## afficher tous les propriétaires  \n")
+    try:
+        cur = conn.cursor()
+        sql = "SELECT * FROM Asso_Compte_Client"
+        cur.execute(sql)
+        res = cur.fetchone()
+        if res==None:
+            print("/!\ AUCUN PROPRIÉTAIRE /!\\")
+        while res:
+            print(" - tel : {} | date création : {}".format(res[0],res[1]))
+            res = cur.fetchone()
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
+
 
 
 ########## MENU ##########
