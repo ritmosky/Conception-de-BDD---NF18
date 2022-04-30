@@ -8,7 +8,10 @@
 \cd documents/school/utc/sem02/nf18/projet_nf18
 
 \copy Client (tel, nom, adresse) FROM 'client.csv' WITH CSV HEADER DELIMITER  ';' QUOTE '"'
+
+\copy compte FROM 'asso_compte_client.csv' WITH CSV HEADER DELIMITER  ';' QUOTE '"'
 """
+
 
 ########## CONNEXION ##########
 
@@ -22,6 +25,7 @@ USER = "me"
 PASSWORD = "secret"
 DATABASE = "projetdb"
 
+
 try:
     conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABASE, USER, PASSWORD))
 except psycopg2.ProgrammingError as e:
@@ -30,31 +34,46 @@ except psycopg2.OperationalError as e:
     print("message système : ", e)
 
 
+########## INITIALIZATION ##########
+
+
+#
+path = input('chemin du dossier où stocker les données(.../.../dossier) : ')
+
 
 # create tables ->
-f = open('documents/school/utc/sem02/nf18/projet_nf18/create.sql', 'r')
+f = open(path+'/create.sql', 'r')
 cur = conn.cursor()
 sql_create = " ".join(f.readlines())
 cur.execute(sql_create)
 conn.commit()
 
 
-
-# drop tables ->
-f = open('documents/school/utc/sem02/nf18/projet_nf18/drop.sql', 'r')
+# /!\/!\/!\ drop tables /!\/!\/!\
+f = open(path+'/drop.sql', 'r')
 cur = conn.cursor()
 sql_drop = " ".join(f.readlines())
 cur.execute(sql_drop)
 conn.commit()
 
 
+# load all of csv files
+
+# /!\ il faut renommer les fichiers csv selon le nom des tables en minuscule /!\
+for file in glob.glob(path + "/*.csv"):
+    print(file)
+    with open(file, 'r') as f:
+        cur = conn.cursor()
+        next(f)     # sauter l'en-tête
+        table_name = file[len(path)+1:file.find('.csv')]
+        cur.copy_from(f, table_name, sep=';')
+        conn.commit()
+
+
 ########## MENU ##########
 
 
 choice = '1'
-chemin = 'documents/school/utc/sem02/nf18/projet_nf18'
-#chemin = input('chemin du dossier où stocker les données(.../.../dossier) : ')
-
 
 while choice!='0':
 
