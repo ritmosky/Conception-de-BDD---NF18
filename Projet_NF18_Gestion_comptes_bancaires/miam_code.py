@@ -40,10 +40,8 @@ except psycopg2.OperationalError as e:
 ########## INITIALIZATION ##########
 
 
-
-#
-path = 'documents/school/utc/sem02/nf18/projet_nf18'
-#input('chemin du dossier où stocker les données(.../.../dossier) : ')
+# 'documents/school/utc/sem02/nf18/projet_nf18'
+path = input('chemin du dossier où stocker les données(.../.../dossier) : ')
 
 
 # create tables ->
@@ -116,71 +114,6 @@ def save_csv(chemin):
 
 
 
-########## Contraintes ##########
-"""
-----> on verifie à chaque insertion si date_crea de la classe fille n'est pas présente dans les autres filles sinon execption
-PROJECTION(Compte, date_crea) = PROJECTION(CompteCourant, date_crea) UNION
-                                PROJECTION(CompteRevolving, date_crea) UNION
-                                PROJECTION(CompteEpargne, date_crea)
-
-
-----> on verifie que id de la classe fille se trouve dans Compte et n'est pas dans les autres filles sinon execption
-PROJECTION(Operation, id) = PROJECTION(CarteBleu, id) UNION
-                            PROJECTION(EmissionCheque, id) UNION
-                            PROJECTION(DepotCheque, id) UNION
-                            PROJECTION(Virement, id) UNION
-                            PROJECTION(CreditGuichet, id) UNION
-                            PROJECTION(DebitGuichet, id)
-"""
-
-
-# retourne True si la contrainte est respectée, sinon False
-def constraint_type_account(date, a_type):
-    types = ["CompteCourant", "CompteRevolving", "CompteEpargne"]
-    try:
-        types.remove(a_type)
-        for c in types:
-            cur = conn.cursor()
-            sql = "SELECT COUNT(*) FROM %s WHERE date_crea=%s" % (c, date)
-            cur.execute(sql)
-            res = cur.fetchone()
-            if res[0]!=0 and res!=None:
-                return False
-    except psycopg2.IntegrityError as e:
-        print("Message système : ",e)
-    return True
-
-
-
-
-# retourne True si la contrainte est respectée, sinon False
-def constraint_operation(id, o_type):
-    types = ["DebitGuichet", "CreditGuichet", "Virement", "DepotCheque", "EmissionCheque", "CarteBleu"]
-    try:
-        types.remove(o_type)
-        for o in types:
-            cur = conn.cursor()
-            sql = "SELECT COUNT(*) FROM %s WHERE id=%s" % (o, id)
-            cur.execute(sql)
-            res = cur.fetchone()
-            if res[0]!=0 and res!=None:
-                return False
-    except psycopg2.IntegrityError as e:
-        print("Message système : ",e)
-    return True
-
-
-"""
-- restreindre les opérations pour chaque type de compte
-- compte fermé n'effectue aucune opération
-- compte boqué n'effectue que des debits et crédits
-"""
-# retourne True si la contrainte est respectée, sinon False
-def constraint_type_operation(date, a_type):
-    return True
-
-
-
 ########## Ajouter ##########
 
 
@@ -238,6 +171,36 @@ def add_owner(conn):
 
 
 
+########## CONTRAINTES COMPTES ##########
+"""
+----> on verifie à chaque insertion si date_crea de la classe fille n'est pas présente dans les autres filles sinon execption
+PROJECTION(Compte, date_crea) = PROJECTION(CompteCourant, date_crea) UNION
+                                PROJECTION(CompteRevolving, date_crea) UNION
+                                PROJECTION(CompteEpargne, date_crea)
+"""
+
+# retourne True si la contrainte est respectée, sinon False
+def constraint_type_account(date, a_type):
+    types = ["CompteCourant", "CompteRevolving", "CompteEpargne"]
+    try:
+        types.remove(a_type)
+        for c in types:
+            cur = conn.cursor()
+            sql = "SELECT COUNT(*) FROM %s WHERE date_crea=%s" % (c, date)
+            cur.execute(sql)
+            res = cur.fetchone()
+            if res[0]!=0 and res!=None:
+                return False
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
+    return True
+
+
+
+########## COMPTES ##########
+
+
+
 # Compte Epargne
 def Epargne(a_type, date_crea):
     print("\n ## Ajouter un compte Epargne\n")
@@ -252,13 +215,26 @@ def Epargne(a_type, date_crea):
 
 
 
+
 # Compte Revolving
+"""
+- les intérets journaliers sont ajoutés à la balance du compteRevolving
+"""
+def calcul_interet_j():
+    cur = conn.cursor()
+    sql = "SELECT balance,taux FROM CompteRevolving WHERE date_crea={}".format(date_crea)
+    cur.execute(sql)
+    balance, taux = cur.fetchone()
+    balance += taux*balance
+    return balance
+
+
 def Revolving(a_type, date_crea):
     print("\n ## Ajouter un compte Revolving\n")
     balance = float(input(" balance (<0) : "))
     taux_j = float(input(" taux journalier entre ]0;1[ : "))
     montant_min = float(input(" prêt minimum (<balance) : "))
-    
+
     try:
         cur = conn.cursor()
         sql = "INSERT INTO {} VALUES ({},{},{},{})".format(a_type, date_crea, balance, taux_j, montant_min)
@@ -319,6 +295,240 @@ def add_account_type(conn):
 
 
 
+########## CONTRAINTES OPERATIONS ##########
+"""
+----> compte ne peut pas effectuer plusieurs opérations en même temps
+----> on verifie que id de la classe fille se trouve dans Compte et n'est pas dans les autres filles sinon execption
+PROJECTION(Operation, id) = PROJECTION(CarteBleu, id) UNION
+                            PROJECTION(EmissionCheque, id) UNION
+                            PROJECTION(DepotCheque, id) UNION
+                            PROJECTION(Virement, id) UNION
+                            PROJECTION(CreditGuichet, id) UNION
+                            PROJECTION(DebitGuichet, id)
+"""
+
+
+ops = {
+"1": "DebitGuichet",
+"2": "CreditGuichet",
+"3": "Virement",
+"4": "DepotCheque",
+"5": "EmissionCheque",
+"6": "CarteBleue"
+}
+
+# retourne True si la contrainte est respectée, sinon False
+def constraint_type_account(date, date_crea, motif, id):
+    types = list(ops.values())
+    try:
+        types.remove(ops.get(motif))
+        for o in types:
+            cur = conn.cursor()
+            # exclusivités des opérations
+            sql1 = "SELECT COUNT(*) FROM {} WHERE id={}".format(o, id)
+            cur.execute(sql1)
+            res1 = cur.fetchone()
+            if res1[0]!=0 and res1!=None:
+                return False
+
+            # compte ne peut pas effectuer plusieurs opérations en même temps
+            sql2 = "SELECT COUNT(*) FROM {} WHERE date={} AND date_crea={}".format(o,date,date_crea)
+            cur.execute(sql2)
+            res2 = cur.fetchone()
+            if res2[0]!=0 and res2!=None:
+                return False
+
+        # compte ne peut pas effectuer plusieurs opérations de même type en même temps
+        o = ops.get(motif)
+        cur = conn.cursor()
+        sql3 = "SELECT COUNT(*) FROM {} WHERE date={} AND date_crea={}".format(o,date,date_crea)
+        cur.execute(sql3)
+        res3 = cur.fetchone()
+        if res3[0]>1 and res3!=None:
+            return False
+
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
+    return True
+
+
+
+"""
+----> restreindre les opérations pour chaque type de compte
+- compte épargne n'effectue que les opérations au guichet et virements
+- compte fermé n'effectue aucune opération
+- compte bloqué n'effectue que des debits et crédits
+"""
+
+# retourne True si la contrainte est respectée, sinon False
+def restriction_type_operation(date_crea, o_type):
+    try:
+        cur = conn.cursor()
+        sql = "SELECT balance FROM CompteEpargne WHERE date_crea=%s" % (date_crea)
+        cur.execute(sql)
+        res = cur.fetchone()
+        if res!=None and o_type not in ['1','2','3']:
+            return False # compte épargne n'effectue que les opérations au guichet et virements
+
+
+        cur = conn.cursor()
+        sql = "SELECT statut FROM compte WHERE date_crea={}".format(date_crea)
+        cur.execute(sql)
+        statut = cur.fetchone()[0]
+        if statut=='fermé':
+            return False  # compte fermé n'effectue aucune opération
+        if statut=='bloqué' and o_type not in ops.values():
+            return False  # compte bloqué n'effectue que des debits et crédits
+        return True
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
+
+
+
+########## OPERATIONS ##########
+
+
+
+# Ajouter une opération
+def add_operation(conn):
+    print("\n ## Ajouter une opération \n")
+    id = int(input(" id : "))
+    montant = float(input(" montant de l'opération (>0) : "))
+    date = quote(input(" date d'opération aaaa-mm-jj = "))
+    print(" état par défaut = non traité ")
+    etat = "non traité"
+    client = int(input(" tel du client : "))
+    date_crea = quote(input(" date de création aaaa-mm-jj hh:mm:ss = "))
+
+    try:
+        cur = conn.cursor()
+        sql = "INSERT INTO operation VALUES ({},{},{},{},{},{})".format(id,montant,date,etat,client,date_crea)
+        cur.execute(sql)
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
+
+# Effectuer une transaction
+# ops = {
+# "1": "DebitGuichet",
+# "2": "CreditGuichet",
+# "3": "Virement",
+# "4": "DepotCheque",
+# "5": "EmissionCheque",
+# "6": "CarteBleue"
+# }
+
+
+
+def type_compte(date_crea):
+    types = ["CompteCourant", "CompteRevolving", "CompteEpargne"]
+    type = ''
+    try:
+        for c in types:
+            cur = conn.cursor()
+            sql = "SELECT COUNT(*) FROM %s WHERE date_crea=%s" % (c, date)
+            cur.execute(sql)
+            res = cur.fetchone()
+            if res[0] != 0:
+                return c
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
+
+
+# on retire de l'argent (DebitGuichet, Virement, EmissionCheque, CarteBleue)
+def debiter(date_crea, motif, type, montant):
+
+    if type == 'CompteCourant':
+        compteCourant = date_crea
+        cur = conn.cursor()
+        sql = "SELECT balance,min_solde,montant_decouvert_autorise FROM CompteCourant WHERE date_crea={}".format(date_crea)
+        cur.execute(sql)
+        balance, min, decouvert = cur.fetchone()
+        dif = balance-montant
+        if dif>min:     # si il y'a assez de fonds
+            cur = conn.cursor()
+            sql = "UPDATE CompteCourant SET balance={} WHERE date_crea={}" % (dif, date_crea)
+            cur.execute(sql)
+            return True
+        # pour utiliser le découvert, nous baissons la valeur min_solde
+        if dif<=min and (decouvert!=None and decouvert>min-dif):
+            cur = conn.cursor()
+            sql = "UPDATE CompteCourant SET min_solde={} WHERE date_crea={}" % (min-dif-1, date_crea)
+            cur.execute(sql)
+            conn.commit()
+            cur = conn.cursor()
+            sql = "UPDATE CompteCourant SET balance={} WHERE date_crea={}" % (min+1, date_crea)
+            cur.execute(sql)
+            return True
+
+
+    if type == 'CompteRevolving':
+        compteRevolving = date_crea
+        cur = conn.cursor()
+        sql = "SELECT balance,montant_min FROM CompteRevolving WHERE date_crea={}".format(date_crea)
+        cur.execute(sql)
+        balance, min = cur.fetchone()
+        dif = balance-montant
+        if dif>min:     # si il y'a assez de fonds
+            cur = conn.cursor()
+            sql = "UPDATE CompteCourant SET balance={} WHERE date_crea={}" % (dif, date_crea)
+            cur.execute(sql)
+            return True
+
+
+    if type == 'CompteEpargne':
+        compteEpargne = date_crea
+        cur = conn.cursor()
+        sql = "SELECT balance,solde_min_const FROM CompteEpargne WHERE date_crea={}".format(date_crea)
+        cur.execute(sql)
+        balance, min = cur.fetchone()
+        dif = balance-montant
+        if dif>min:     # si il y'a assez de fonds
+            cur = conn.cursor()
+            sql = "UPDATE CompteCourant SET balance={} WHERE date_crea={}" % (dif, date_crea)
+            cur.execute(sql)
+            return True
+
+    return False
+
+# on dépose de l'argent (CreditGuichet, DepotCheque)
+def crediter(date_crea, motif, type, montant):
+    debiter(date_crea, motif, type, -montant)
+
+
+
+def deplacer(conn):
+    print("\n ## Effectuer une transaction \n")
+    print(" 1. Pour faire un retrait au guichet")
+    print(" 2. Pour faire un dépôt au guichet")
+    print(" 3. Pour faire virement")
+    print(" 4. Pour déposer de chèque")
+    print(" 5. Pour émettre un chèque")
+    print(" 6. Pour faire un retrait avec carte Bleue \n")
+    motif = input(" choix : ")
+    date = quote(input(" date d'opération aaaa-mm-jj = "))
+    montant = float(input(" montant de l'opération (>0) : "))
+    client = int(input(" entrez votre id(tel) : "))
+    date_crea = quote(input(" date de création du compte aaaa-mm-jj hh:mm:ss = "))
+
+    type = type_compte(date_crea)
+    if restriction_type_operation(date_crea, motif):
+    #constraint_type_account(date, date_crea, motif, id)
+
+    if restriction_type_operation(date_crea, motif):
+    try:
+        cur = conn.cursor()
+        sql = "SELECT  INTO operation VALUES ({},{},{},{},{},{})".format(id,montant,date,etat,client,date_crea)
+        cur.execute(sql)
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
+
+
+"""
+pour les transactions, on considère les étapes suivantes :
+- le client renseigne le montant à transacter
+- la transaction est effectuée avec la méthode deplacer() de la classe Compte
+- puis l'agent renseigne les infos relatives à l'Opération
+"""
 ########## Afficher ##########
 
 
@@ -389,9 +599,12 @@ while choice!='0':
     print(" 2. Ajouter un compte")
     print(" 3. Ajouter un propriétaire à un compte")
     print(" 4. Ajouter un type de compte")
-    print(" 5. Afficher tous les clients")
-    print(" 6. Afficher tous les comptes")
-    print(" 7. Afficher tous les propriétaires")
+    print(" 5. Ajouter une opération")
+    print(" 6. Afficher tous les clients")
+    print(" 7. Afficher tous les comptes")
+    print(" 8. Afficher tous les propriétaires")
+    print(" 9. Afficher toutes les opérations")
+    print(" 10. Afficher balance d'un compte (connaissant date de création)")
     print(" -----------------------------\n")
 
     choice = input(" choix : ")
@@ -418,28 +631,18 @@ while choice!='0':
         display_all_account(conn)
     if choice=='7':
         display_all_owner(conn)
+    if choice=='8':
+        date = quote(input("\n date de création aaaa-mm-jj hh:mm = "))
+        cur = conn.cursor()
+        sql = "SELECT balance FROM compteepargne WHERE date_crea={} UNION SELECT balance FROM compterevolving WHERE date_crea={} UNION SELECT balance FROM comptecourant WHERE date_crea={}".format(date,date,date)
+        cur.execute(sql)
+        res = cur.fetchone()
+        print("\n ## Pour le compte crée {} \n\n ==> balance = {}€ <==".format(date, res[0]))
 
 
 
 # Clôture de la connexion
 conn.close()
-
-
-
-
-
-"""
-
-RESTE A CODER
-
-- comptes d'épargne sont limités aux opérations au guichet et aux virements
-- Un compte ne peut pas effectuer plusleurs opérations en même temps
-
-- deplacer() permet de retirer et deposer des fonds
-- les intérets journaliers sont ajoutés à la balance du compteRevolving
-- OperationPossible verifie si le statut et la balance permettent l'opération
-"""
-
 
 
 
