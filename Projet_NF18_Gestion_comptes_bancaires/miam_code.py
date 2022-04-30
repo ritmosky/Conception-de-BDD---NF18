@@ -15,7 +15,7 @@
 
 # bibliothèque
 import psycopg2
-
+import csv
 
 HOST = "localhost"
 USER = "me"
@@ -30,13 +30,35 @@ except psycopg2.OperationalError as e:
     print("message système : ", e)
 
 
+
+# create tables ->
+f = open('documents/school/utc/sem02/nf18/projet_nf18/create.sql', 'r')
+cur = conn.cursor()
+sql_create = " ".join(f.readlines())
+cur.execute(sql_create)
+conn.commit()
+
+
+
+# drop tables ->
+f = open('documents/school/utc/sem02/nf18/projet_nf18/drop.sql', 'r')
+cur = conn.cursor()
+sql_drop = " ".join(f.readlines())
+cur.execute(sql_drop)
+conn.commit()
+
+
 ########## MENU ##########
 
 
 choice = '1'
+chemin = 'documents/school/utc/sem02/nf18/projet_nf18'
+#chemin = input('chemin du dossier où stocker les données(.../.../dossier) : ')
+
+
 while choice!='0':
-    connect()
-    print("\n ------------ MENU -----------\n")
+
+    print("\n ------------ MENU -----------")
     print(" 1. Ajouter un client")
     print(" 2. Ajouter un compte")
     print(" 3. Ajouter un propriétaire à un compte")
@@ -44,38 +66,51 @@ while choice!='0':
     print(" 5. Afficher tous les clients")
     print(" 6. Afficher tous les comptes")
     print(" 7. Afficher tous les propriétaires")
-    print("\n -----------------------------\n")
+    print(" -----------------------------\n")
 
     choice = input(" choix : ")
 
     if choice=='1':
         add_customer(conn)
+        conn.commit()
+        save_csv(chemin)
     if choice=='2':
         add_account(conn)
+        conn.commit()
+        save_csv(chemin)
     if choice=='3':
         add_owner(conn)
+        conn.commit()
+        save_csv(chemin)
     if choice=='4':
         add_account_type(conn)
+        conn.commit()
+        save_csv(chemin)
     if choice=='5':
         display_all_customer(conn)
     if choice=='6':
         display_all_account(conn)
     if choice=='7':
         display_all_owner(conn)
-    print("\n ----------- FIN ----------\n")
+
+
 
 
 ########## Contraintes ##########
 """
-PROJECTION(Compte, date_crea) = PROJECTION(CompteCourant, date_crea) UNION
-    PROJECTION(CompteRevolving, date_crea) UNION PROJECTION(CompteEpargne, date_crea)
 ----> on verifie à chaque insertion si date_crea de la classe fille n'est pas présente dans les autres filles sinon execption
+PROJECTION(Compte, date_crea) = PROJECTION(CompteCourant, date_crea) UNION
+                                PROJECTION(CompteRevolving, date_crea) UNION
+                                PROJECTION(CompteEpargne, date_crea)
 
 
-PROJECTION(Operation, id) = PROJECTION(CarteBleu, id) UNION PROJECTION(EmissionCheque, id)
-    UNION PROJECTION(DepotCheque, id) UNION PROJECTION(Virement, id) UNION
-    PROJECTION(CreditGuichet, id) UNION PROJECTION(DebitGuichet, id)
 ----> on verifie que id de la classe fille se trouve dans Compte et n'est pas dans les autres filles sinon execption
+PROJECTION(Operation, id) = PROJECTION(CarteBleu, id) UNION
+                            PROJECTION(EmissionCheque, id) UNION
+                            PROJECTION(DepotCheque, id) UNION
+                            PROJECTION(Virement, id) UNION
+                            PROJECTION(CreditGuichet, id) UNION
+                            PROJECTION(DebitGuichet, id)
 """
 
 # retourne True si la contrainte est respectée, sinon False
@@ -84,14 +119,17 @@ def constraint_type_account(date, a_type):
     try:
         types.remove(a_type)
         for c in types:
+            cur = conn.cursor()
             sql = "SELECT COUNT(*) FROM %s WHERE date_crea=%s" % (c, date)
             cur.execute(sql)
-            res = sql.fetchone
+            res = cur.fetchone()
             if res[0]!=0 and res!=None:
                 return False
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
     return True
+
+
 
 
 # retourne True si la contrainte est respectée, sinon False
@@ -100,9 +138,10 @@ def constraint_operation(id, o_type):
     try:
         types.remove(o_type)
         for o in types:
+            cur = conn.cursor()
             sql = "SELECT COUNT(*) FROM %s WHERE id=%s" % (o, id)
             cur.execute(sql)
-            res = sql.fetchone
+            res = cur.fetchone()
             if res[0]!=0 and res!=None:
                 return False
     except psycopg2.IntegrityError as e:
@@ -110,6 +149,11 @@ def constraint_operation(id, o_type):
     return True
 
 
+"""
+- restreindre les opérations pour chaque type de compte
+- compte fermé n'effectue aucune opération
+- compte boqué n'effectue que des debits et crédits
+"""
 # retourne True si la contrainte est respectée, sinon False
 def constraint_type_operation(date, a_type):
     return True
@@ -144,7 +188,7 @@ def add_customer(conn):
 # ajouter un compte
 def add_account(conn):
     print("\n ## Ajouter un compte \n")
-    date_crea = quote(input(" date de création aaaa-mm-jj hh:mm = "))
+    date_crea = quote(input(" date de création aaaa-mm-jj hh:mm:ss = "))
     statut = quote(input(" statut(ouvert,bloqué ou fermé) : "))
 
     try:
@@ -171,24 +215,6 @@ def add_owner(conn):
 
 
 
-# ajouter un type de compte
-def account_type():
-    c = '0'
-    while c not in ['1', '2', '3'] :
-        print(" 1. Pour un Compte Epargne")
-        print(" 2. Pour un Compte Revolving")
-        print(" 3. Pour un Compte Courant")
-        c = input(" choix : ")
-    print("... {} ... ".format(c), end=' ==> ')
-    if c=='1':
-        return "CompteEpargne"
-    if c=='2':
-        return "CompteRevolving"
-    if c=='3':
-        return "CompteCourant"
-
-
-
 # Compte Epargne
 def Epargne(a_type, date_crea):
     print("\n ## Ajouter un compte Epargne\n")
@@ -207,7 +233,7 @@ def Epargne(a_type, date_crea):
 def Revolving(a_type, date_crea):
     print("\n ## Ajouter un compte Revolving\n")
     taux_j = float(input(" taux journalier entre ]0;1[ : "))
-    solde_min = float(input(" solde minimum (<0) : "))
+    montant_min = float(input(" solde minimum (<0) : "))
     balance = float(input(" balance entre [solde min;0] : "))
     try:
         cur = conn.cursor()
@@ -235,16 +261,34 @@ def Courant(a_type, date_crea):
 
 
 
+# ajouter un type de compte
+def print_account_type():
+    c = '0'
+    while c not in ['1', '2', '3'] :
+        print(" 1. Pour un Compte Epargne")
+        print(" 2. Pour un Compte Revolving")
+        print(" 3. Pour un Compte Courant \n")
+        c = input(" choix : ")
+    if c=='1':
+        return "CompteEpargne"
+    if c=='2':
+        return "CompteRevolving"
+    if c=='3':
+        return "CompteCourant"
+
+
 def add_account_type(conn):
     print("\n -- Ajouter un type de compte --\n")
-    a_type = account_type()
+    a_type = print_account_type()
     date_crea = quote(input(" date de création aaaa-mm-jj hh:mm = "))
-
     if a_type=="CompteEpargne":
+        constraint_type_account(date_crea, a_type)
         Epargne(a_type, date_crea)
     if a_type=="CompteRevolving":
+        constraint_type_account(date_crea, a_type)
         Revolving(a_type, date_crea)
     if a_type=="CompteCourant":
+        constraint_type_account(date_crea, a_type)
         Courant(a_type, date_crea)
 
 
@@ -317,12 +361,50 @@ conn.close()
 
 RESTE A CODER
 
-
+- comptes d'épargne sont limités aux opérations au guichet et aux virements
 - Un compte ne peut pas effectuer plusleurs opérations en même temps
-- compte fermé n'effectue aucune opération
-- compte boque n'effectue que des debits et crédits
+
 - deplacer() permet de retirer et deposer des fonds
 - les intérets journaliers sont ajoutés à la balance du compteRevolving
 - OperationPossible verifie si le statut et la balance permettent l'opération
-- restreindre les opérations pour chaque type de compte
 """
+
+
+
+########## Enregistrer dans un fichier CSV les tables ##########
+
+dico = {
+'Client_col' : ["tel", "nom", "adresse"],
+'Compte_col' : ['date_crea', 'statut'],
+'Asso_Compte_Client_col' : ['tel', 'date_crea'],
+'CompteEpargne_col' : ['date_crea', 'balance', 'solde_min_const'],
+'CompteRevolving_col' : ['date_crea', 'balance', 'taux_j', 'montant_min'],
+'CompteCourant_col' : ['date_crea', 'balance', 'montant_decouvert_autorise','max_solde' ,'min_solde', 'date_debut_decouvert']
+}
+
+# 'Operation_col' : ['id', 'montant', 'date', 'etat', 'client', 'date_crea'],
+# 'DebitGuichet_col' : ['id', 'compteCourant', 'compteRevolving', 'compteEpargne'],
+# 'CreditGuichet_col' : ['id', 'compteCourant', 'compteRevolving', 'compteEpargne'],
+# 'Virement_col' : ['id', 'compteCourant', 'compteRevolving', 'compteEpargne'],
+# 'DepotCheque_col' : ['id', 'compteCourant', 'compteRevolving'],
+# 'EmissionCheque_col' : ['id', 'compteCourant', 'compteRevolving'],
+# 'CarteBleu_col' : ['id', 'compteCourant', 'compteRevolving']
+# }
+
+
+def save_csv(chemin):
+    #cols, table = recognize_table()
+    for key,cols in dico.items():
+        table = key[:key.find('_col')]
+        cur = conn.cursor()
+        sql = "SELECT * FROM {}".format(table)
+        cur.execute(sql)
+        line = cur.fetchone()
+    #Ouverture du fichier CSV en écriture
+        with open('{}/{}.csv'.format(chemin, table.lower()),'w',newline='') as f:
+            ecrire = csv.writer(f, delimiter=";")
+            ecrire.writerow(cols) # écrire une ligne dans le fichier
+            while line:
+                    ecrire.writerow(line)
+                    line = cur.fetchone()  # passage à la ligne suivante
+
