@@ -21,7 +21,7 @@ PROJECTION(Compte, date_crea) = PROJECTION(Asso_Compte_Client, date_crea)
 
 - CompteEpargne(#date_crea => Compte.date_crea, balance => Compte.balance, solde_min_const : Float) avec {balance>solde_min_const, solde_min_const>0}
 
-- CompteRevolving(#date_crea => Compte.date_crea, balance => Compte.balance, taux_j : Float, montant_min : Float) avec {0 < taux_j < 1, montant_min < 0, et balance < montant_min}
+- CompteRevolving(#date_crea => Compte.date_crea, balance => Compte.balance, taux_j : Float, montant_min : Float) avec {0 < taux_j < 1, montant_min < 0, et balance > montant_min}
 
 - CompteCourant(#date_crea => Compte.date_crea, balance => Compte.balance, montant_decouvert_autorise : Float, date_debut_decouvert : Date, max_solde : Float, min_solde : Float) avec {max_solde > 0, min_solde > 0, min_solde < balance < max_solde,  date_debut_decouvert NULLABLE, montant_decouvert_autorise NULLABLE}
 
