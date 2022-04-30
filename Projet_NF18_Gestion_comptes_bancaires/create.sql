@@ -47,7 +47,7 @@ CREATE TABLE CompteRevolving (
     montant_min FLOAT NOT NULL,
 
     CHECK (taux_j > 0 AND taux_j < 1),
-    CHECK (montant_min < 0),
+    CHECK (balance < 0),
     CHECK (montant_min < balance),
     
     PRIMARY KEY(date_crea),
