@@ -1,15 +1,10 @@
-
 """
 - effectuer des requêtes avec un fichier sql
-\i documents/school/utc/sem02/nf18/projet_nf18/drop.sql
-\i documents/school/utc/sem02/nf18/projet_nf18/create.sql;
+\i documents/school/utc/sem02/nf18/projet_nf18/nom_fichier.sql
 
-- pour importer un fichier csv
-\cd documents/school/utc/sem02/nf18/projet_nf18
-
-\copy Client (tel, nom, adresse) FROM 'client.csv' WITH CSV HEADER DELIMITER  ';' QUOTE '"'
-
-\copy compte FROM 'asso_compte_client.csv' WITH CSV HEADER DELIMITER  ';' QUOTE '"'
+- pour importer un fichier csv(d'abord se placer dans le dossier)
+\cd doss/.../dossier_fichier
+\copy Client FROM 'client.csv' WITH CSV HEADER DELIMITER  ';' QUOTE '"'
 """
 
 
