@@ -18,9 +18,13 @@
 
 
 # bibliothèque
+# exécuter => pip install package_name pour installer un package
 import psycopg2
 import csv
+import glob
+import os.path
 
+ 
 HOST = "localhost"
 USER = "me"
 PASSWORD = "secret"
@@ -73,7 +77,6 @@ for file in glob.glob(path + "/*.csv"):
         conn.commit()
 
 
-
 ########## Enregistrer les tables dans un fichier CSV  ##########
 
 
@@ -85,7 +88,7 @@ dico = {
 'Asso_Compte_Client_col' : ['tel', 'date_crea'],
 'CompteEpargne_col' : ['date_crea', 'balance', 'solde_min_const'],
 'CompteRevolving_col' : ['date_crea', 'balance', 'taux_j', 'montant_min'],
-'CompteCourant_col' : ['date_crea', 'balance', 'montant_decouvert_autorise','max_solde' ,'min_solde', 'date_debut_decouvert'],
+'CompteCourant_col' : ['date_crea', 'balance', 'montant_decouvert_autorise','max_solde' ,'min_solde', 'date_debut_decouvert']
 'Operation_col' : ['id', 'montant', 'date', 'etat', 'client', 'date_crea'],
 'DebitGuichet_col' : ['id', 'compteCourant', 'compteRevolving', 'compteEpargne'],
 'CreditGuichet_col' : ['id', 'compteCourant', 'compteRevolving', 'compteEpargne'],
@@ -511,14 +514,16 @@ def deplacer(conn):
     date_crea = quote(input(" date de création du compte aaaa-mm-jj hh:mm:ss = "))
 
     type = type_compte(date_crea)
+    if restriction_type_operation(date_crea, motif):
+    #constraint_type_account(date, date_crea, motif, id)
 
     if restriction_type_operation(date_crea, motif):
-        try:
-            cur = conn.cursor()
-            sql = "SELECT  INTO operation VALUES ({},{},{},{},{},{})".format(id,montant,date,etat,client,date_crea)
-            cur.execute(sql)
-        except psycopg2.IntegrityError as e:
-            print("Message système : ",e)
+    try:
+        cur = conn.cursor()
+        sql = "SELECT  INTO operation VALUES ({},{},{},{},{},{})".format(id,montant,date,etat,client,date_crea)
+        cur.execute(sql)
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
 
 
 """
@@ -641,7 +646,5 @@ while choice!='0':
 
 # Clôture de la connexion
 conn.close()
-
-
 
 
