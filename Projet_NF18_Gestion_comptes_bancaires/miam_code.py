@@ -511,16 +511,14 @@ def deplacer(conn):
     date_crea = quote(input(" date de création du compte aaaa-mm-jj hh:mm:ss = "))
 
     type = type_compte(date_crea)
-    if restriction_type_operation(date_crea, motif):
-    #constraint_type_account(date, date_crea, motif, id)
 
     if restriction_type_operation(date_crea, motif):
-    try:
-        cur = conn.cursor()
-        sql = "SELECT  INTO operation VALUES ({},{},{},{},{},{})".format(id,montant,date,etat,client,date_crea)
-        cur.execute(sql)
-    except psycopg2.IntegrityError as e:
-        print("Message système : ",e)
+        try:
+            cur = conn.cursor()
+            sql = "SELECT  INTO operation VALUES ({},{},{},{},{},{})".format(id,montant,date,etat,client,date_crea)
+            cur.execute(sql)
+        except psycopg2.IntegrityError as e:
+            print("Message système : ",e)
 
 
 """
