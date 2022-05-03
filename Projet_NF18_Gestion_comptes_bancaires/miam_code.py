@@ -11,7 +11,6 @@
 ########## CONNEXION ##########
 
 
-
 # bibliothèque
 # exécuter => pip install package_name pour installer un package
 import psycopg2
@@ -26,14 +25,12 @@ PASSWORD = "secret"
 DATABASE = "projetdb"
 
 
-
 try:
     conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABASE, USER, PASSWORD))
 except psycopg2.ProgrammingError as e:
     print("message système : ", e)
 except psycopg2.OperationalError as e:
     print("message système : ", e)
-
 
 
 ########## INITIALIZATION ##########
@@ -59,8 +56,7 @@ cur.execute(sql_drop)
 conn.commit()
 
 
-# load all of csv files
-
+# pour charger tous les fichiers csv dans le dossier
 # /!\ il faut renommer les fichiers csv selon le nom des tables en minuscule /!\
 for file in glob.glob(path + "/*.csv"):
     print(file)
