@@ -47,7 +47,7 @@ CREATE TABLE CompteRevolving (
     montant_min FLOAT NOT NULL,
 
     CHECK (taux_j > 0 AND taux_j < 1),
-    CHECK (balance < 0),
+    CHECK (montant_min < 0),
     CHECK (montant_min < balance),
     
     PRIMARY KEY(date_crea),
@@ -92,77 +92,47 @@ CREATE TABLE Operation (
 
 CREATE TABLE DebitGuichet (
     id  INT,
-    compteCourant TIMESTAMP,
-    compteRevolving TIMESTAMP,
-    compteEpargne TIMESTAMP,
 
     PRIMARY KEY(id),
-    FOREIGN KEY (id) REFERENCES Operation(id),
-    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
-    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea),
-    FOREIGN KEY (compteEpargne) REFERENCES CompteEpargne(date_crea)
+    FOREIGN KEY (id) REFERENCES Operation(id)
 );
 
 
 CREATE TABLE CreditGuichet (
     id  INT,
-    compteCourant TIMESTAMP,
-    compteRevolving TIMESTAMP,
-    compteEpargne TIMESTAMP,
 
     PRIMARY KEY(id),
-    FOREIGN KEY (id) REFERENCES Operation(id),
-    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
-    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea),
-    FOREIGN KEY (compteEpargne) REFERENCES CompteEpargne(date_crea)
+    FOREIGN KEY (id) REFERENCES Operation(id)
 );
 
 
 CREATE TABLE Virement (
     id  INT,
-    compteCourant TIMESTAMP,
-    compteRevolving TIMESTAMP,
-    compteEpargne TIMESTAMP,
 
     PRIMARY KEY(id),
-    FOREIGN KEY (id) REFERENCES Operation(id),
-    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
-    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea),
-    FOREIGN KEY (compteEpargne) REFERENCES CompteEpargne(date_crea)
+    FOREIGN KEY (id) REFERENCES Operation(id)
 );
 
 
 CREATE TABLE DepotCheque (
     id  INT,
-    compteCourant TIMESTAMP,
-    compteRevolving TIMESTAMP,
 
     PRIMARY KEY(id),
-    FOREIGN KEY (id) REFERENCES Operation(id),
-    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
-    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea)
+    FOREIGN KEY (id) REFERENCES Operation(id)
 );
 
 
 CREATE TABLE EmissionCheque (
     id  INT,
-    compteCourant TIMESTAMP,
-    compteRevolving TIMESTAMP,
 
     PRIMARY KEY(id),
-    FOREIGN KEY (id) REFERENCES Operation(id),
-    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
-    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea)
+    FOREIGN KEY (id) REFERENCES Operation(id)
 );
 
 
 CREATE TABLE CarteBleu (
     id  INT,
-    compteCourant TIMESTAMP,
-    compteRevolving TIMESTAMP,
 
     PRIMARY KEY(id),
-    FOREIGN KEY (id) REFERENCES Operation(id),
-    FOREIGN KEY (compteCourant) REFERENCES CompteCourant(date_crea),
-    FOREIGN KEY (compteRevolving) REFERENCES CompteRevolving(date_crea)
+    FOREIGN KEY (id) REFERENCES Operation(id)
 );
