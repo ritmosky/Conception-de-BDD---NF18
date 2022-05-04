@@ -42,19 +42,21 @@ path = input('chemin du dossier où stocker les données(.../.../dossier) : ')
 
 
 # create tables ->
-f = open(path+'/create.sql', 'r')
-cur = conn.cursor()
-sql_create = " ".join(f.readlines())
-cur.execute(sql_create)
-conn.commit()
+def create_table():
+    f = open(path+'/create.sql', 'r')
+    cur = conn.cursor()
+    sql_create = " ".join(f.readlines())
+    cur.execute(sql_create)
+    conn.commit()
 
 
 # /!\/!\/!\ drop tables /!\/!\/!\
-f = open(path+'/drop.sql', 'r')
-cur = conn.cursor()
-sql_drop = " ".join(f.readlines())
-cur.execute(sql_drop)
-conn.commit()
+def drop_table():
+    f = open(path+'/drop.sql', 'r')
+    cur = conn.cursor()
+    sql_drop = " ".join(f.readlines())
+    cur.execute(sql_drop)
+    conn.commit()
 
 
 # pour charger tous les fichiers csv dans le dossier
@@ -74,14 +76,15 @@ classes = {
 12: 'cartebleu',
 13: 'virement'}
 
+
 def import_data():
     files = []
     for file in glob.glob(path + "/*.csv"):
-        #print(file)
+        print(file)
         files.append(file)
         
     for c in list(classes.values()):
-        file = path + '/' + c + ".csv"
+        file = path + '/' + c + ".csv"  # remplacer '/' par '\\' sur windows
         if file in files:
             with open(file, 'r') as f:
                 cur = conn.cursor()
@@ -89,10 +92,6 @@ def import_data():
                 table_name = file[len(path)+1:file.find('.csv')]
                 cur.copy_from(f, table_name, sep=';', null='')
                 conn.commit()
-
-
-
-import_data()
 
 
 ########## Enregistrer les tables dans un fichier CSV  ##########
@@ -658,6 +657,13 @@ def display_all_operation(conn):
 
 
 ########## MENU ##########
+
+
+create_table()
+drop_table()
+
+import_data()
+
 
 choice = '1'
 
