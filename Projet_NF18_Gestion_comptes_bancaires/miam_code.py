@@ -10,6 +10,7 @@
 
 ########## CONNEXION ##########
 
+\copy CompteCourant FROM 'comptecourant.csv' WITH CSV HEADER DELIMITER  ';' QUOTE '"'
 
 # bibliothèque
 # exécuter => pip install package_name pour installer un package
@@ -18,7 +19,7 @@ import csv
 import glob
 import os.path
 
- 
+
 HOST = "localhost"
 USER = "me"
 PASSWORD = "secret"
@@ -58,15 +59,40 @@ conn.commit()
 
 # pour charger tous les fichiers csv dans le dossier
 # /!\ il faut renommer les fichiers csv selon le nom des tables en minuscule /!\
-for file in glob.glob(path + "/*.csv"):
-    print(file)
-    with open(file, 'r') as f:
-        cur = conn.cursor()
-        next(f)     # sauter l'en-tête
-        table_name = file[len(path)+1:file.find('.csv')]
-        cur.copy_from(f, table_name, sep=';')
-        conn.commit()
+classes = {
+1: 'client',
+2: 'compte',
+3: 'asso_compte_client',
+4: 'compteepargne',
+5: 'compterevolving',
+6: 'comptecourant',
+7: 'operation',
+8: 'debitguichet',
+9: 'creditguichet',
+10: 'depotcheque',
+11: 'emissioncheque',
+12: 'cartebleu',
+13: 'virement'}
 
+def import_data():
+    files = []
+    for file in glob.glob(path + "/*.csv"):
+        print(file)
+        files.append(file)
+        
+    for c in list(classes.values()):
+        file = path + '/' + c + ".csv"
+        if file in files:
+            with open(file, 'r') as f:
+                cur = conn.cursor()
+                next(f)     # sauter l'en-tête
+                table_name = file[len(path)+1:file.find('.csv')]
+                cur.copy_from(f, table_name, sep=';')
+                conn.commit()
+
+
+
+import_data()
 
 ########## Enregistrer les tables dans un fichier CSV  ##########
 
@@ -131,9 +157,9 @@ def type_compte(date_crea):
                 return type.lower()[6:]
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
-        
 
-        
+
+
 def type_operation(id):
     try:
         for type in list(ops.values()):
@@ -150,7 +176,7 @@ def type_operation(id):
 ########## AJOUTER ##########
 
 
-        
+
 # ajouter un client
 def add_customer(conn):
     print("\n ## Ajouter un client \n")
@@ -184,7 +210,7 @@ def add_owner(conn):
 
 ########## COMPTES/CONTRAINTES_COMPTES ##########
 """
-----> on verifie à chaque insertion si date_crea de la classe fille n'est pas 
+----> on verifie à chaque insertion si date_crea de la classe fille n'est pas
 présente dans les autres filles sinon execption
 PROJECTION(Compte, date_crea) = PROJECTION(CompteCourant, date_crea) UNION
                                 PROJECTION(CompteRevolving, date_crea) UNION
@@ -223,7 +249,7 @@ def calcul_interet_j():
 
 def account_type(date_crea, a_type, num):
     #Compte Epargne
-    if num=='1': 
+    if num=='1':
         print("\n ## Ajouter un compte Epargne \n")
         balance = float(input(" balance (>0): "))
         solde_min_const = float(input(" solde minimum statuaire entre [0;balance]) : "))
@@ -233,7 +259,7 @@ def account_type(date_crea, a_type, num):
             cur.execute(sql)
         except psycopg2.IntegrityError as e:
             print("Message système : ",e)
-            
+
     #Compte Revolving
     if num=='2':
         print("\n ## Ajouter un compte Revolving \n")
@@ -246,7 +272,7 @@ def account_type(date_crea, a_type, num):
             cur.execute(sql)
         except psycopg2.IntegrityError as e:
             print("Message système : ",e)
-            
+
     #Compte Courant
     if num=='3':
         print("\n ## Ajouter un compte Courant \n")
@@ -262,8 +288,8 @@ def account_type(date_crea, a_type, num):
         except psycopg2.IntegrityError as e:
             print("Message système : ",e)
 
-    
-        
+
+
 def add_account(conn):
     # ajouter un compte
     print("\n ## Ajouter un compte \n")
@@ -289,7 +315,7 @@ def add_account(conn):
         a_type = "CompteRevolving"
     if c=='3':
         a_type = "CompteCourant"
-        
+
     if constraint_type_account(date_crea, a_type):
         account_type(date_crea, a_type, c)
     else:
@@ -370,20 +396,20 @@ def restriction_type_operation(date_crea, motif):
         cur.execute(sql)
         res = cur.fetchone()
         if res!=None and motif not in ['1','2','3']:
-            return False 
-            
+            return False
+
         # compte fermé -> aucune opération
         cur = conn.cursor()
         sql = "SELECT statut FROM Compte WHERE date_crea={}".format(date_crea)
         cur.execute(sql)
         statut = cur.fetchone()[0]
         if statut=='fermé':
-            return False  
-            
+            return False
+
         # compte bloqué -> debits et crédits
         if statut=='bloqué' and motif not in ['1','2']:
-            return False 
-             
+            return False
+
         return True
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
@@ -487,16 +513,16 @@ def crediter(date_crea, motif, type, montant):
         cur.execute(sql)
         return True
     return False
-    
-    
+
+
 
 def deplacer(date_crea, motif, type, montant):
     if motif in ['1', '3', '5', '6']:
         debiter(date_crea, motif, type, -montant)
     if motif in ['2', '4']:
         crediter(date_crea, motif, type, montant)
-        
-        
+
+
 ops = {
 "1": "DebitGuichet",
 "2": "CreditGuichet",
@@ -524,7 +550,7 @@ def add_operation(conn):
         cur.execute(sql)
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
-        
+
     # Ajouter le type de l'opération
     print(" 1. Pour faire un retrait au guichet")
     print(" 2. Pour faire un dépôt au guichet")
@@ -532,7 +558,7 @@ def add_operation(conn):
     print(" 4. Pour déposer de chèque")
     print(" 5. Pour émettre un chèque")
     print(" 6. Pour faire un retrait avec carte Bleue \n")
-    
+
     num = input(" choix : ")
     if constraint_type_account(date,date_crea,num,id) and restriction_type_operation(date_crea,num):
         try:
@@ -541,7 +567,7 @@ def add_operation(conn):
             cur.execute(sql)
         except psycopg2.IntegrityError as e:
             print("Message système : ",e)
-        
+
 
 
 ########## Afficher ##########
