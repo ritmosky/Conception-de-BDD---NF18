@@ -1,16 +1,5 @@
-"""
-- effectuer des requêtes avec un fichier sql
-\i documents/school/utc/sem02/nf18/projet_nf18/nom_fichier.sql
-
-- pour importer un fichier csv(d'abord se placer dans le dossier)
-\cd doss/.../dossier_fichier
-\copy Client FROM 'client.csv' WITH CSV HEADER DELIMITER  ';' QUOTE '"'
-"""
-
-
 ########## CONNEXION ##########
 
-\copy CompteCourant FROM 'comptecourant.csv' WITH CSV HEADER DELIMITER  ';' QUOTE '"'
 
 # bibliothèque
 # exécuter => pip install package_name pour installer un package
@@ -74,7 +63,8 @@ classes = {
 10: 'depotcheque',
 11: 'emissioncheque',
 12: 'cartebleu',
-13: 'virement'}
+13: 'virement'
+}
 
 
 def import_data():
@@ -82,7 +72,7 @@ def import_data():
     for file in glob.glob(path + "/*.csv"):
         print(file)
         files.append(file)
-        
+
     for c in list(classes.values()):
         file = path + '/' + c + ".csv"  # remplacer '/' par '\\' sur windows
         if file in files:
@@ -347,7 +337,7 @@ PROJECTION(Operation, id) = PROJECTION(CarteBleu, id) UNION
                             PROJECTION(DebitGuichet, id)
 """
 
-def constraint_type_account(date, date_crea, motif, id):
+def constraint_type_operation(date, date_crea, motif, id):
     types = list(ops.values())
     try:
         types.remove(ops.get(motif))
@@ -659,10 +649,26 @@ def display_all_operation(conn):
 ########## MENU ##########
 
 
-create_table()
-drop_table()
+try:
+    create_table()  # pour créer les tables
+    import_data()   # pour importer des données csv 
+except psycopg2.errors.InFailedSqlTransaction as e:
+    print("message système : ", e)
+except psycopg2.errors.DuplicateTable as e:
+    print("message système : ", e)
+    
+    
+#drop_table()   # pour supprimer les tables
 
-import_data()
+
+
+try:
+    conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABASE, USER, PASSWORD))
+except psycopg2.ProgrammingError as e:
+    print("message système : ", e)
+except psycopg2.OperationalError as e:
+    print("message système : ", e)
+
 
 
 choice = '1'
@@ -719,6 +725,8 @@ while choice!='0':
         cur.execute(sql)
         res = cur.fetchone()
         print("\n## Le client {} a émis {} chèques ".format(client, res[0]))
+
+
 
 # Clôture de la connexion
 conn.close()
