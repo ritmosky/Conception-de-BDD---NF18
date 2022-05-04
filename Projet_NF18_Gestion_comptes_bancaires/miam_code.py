@@ -77,7 +77,7 @@ classes = {
 def import_data():
     files = []
     for file in glob.glob(path + "/*.csv"):
-        print(file)
+        #print(file)
         files.append(file)
         
     for c in list(classes.values()):
@@ -87,12 +87,13 @@ def import_data():
                 cur = conn.cursor()
                 next(f)     # sauter l'en-tête
                 table_name = file[len(path)+1:file.find('.csv')]
-                cur.copy_from(f, table_name, sep=';')
+                cur.copy_from(f, table_name, sep=';', null='')
                 conn.commit()
 
 
 
 import_data()
+
 
 ########## Enregistrer les tables dans un fichier CSV  ##########
 
