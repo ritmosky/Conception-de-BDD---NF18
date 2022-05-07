@@ -10,9 +10,9 @@ import os.path
 
 
 HOST = "localhost"
-USER = "me"
-PASSWORD = "secret"
-DATABASE = "projetdb"
+USER = "postgres"
+PASSWORD = "fort"
+DATABASE = "postgres"
 
 
 try:
@@ -182,7 +182,11 @@ def type_operation(id):
 # ajouter un client
 def add_customer(conn):
     print("\n ## Ajouter un client \n")
-    tel = int(input(" tel : "))
+    try: 
+        tel = int(input(" tel : ")) 
+    except ValueError as e:
+        print("Message système : ",e)
+        return
     nom = quote(input(" nom : "))
     adresse = quote(input(" adresse : "))
 
@@ -311,6 +315,7 @@ def add_account(conn):
         cur.execute(sql)
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
+        return
     # ajouter le type du compte
     print("\n ## Ajouter un type de compte \n")
     c = '0'
@@ -644,10 +649,13 @@ def display_all_owner(conn):
 def display_all_operation(conn):
     print("\n ## afficher tous les propriétaires  \n")
     try:
-        cur = conn.cursor()
-        sql = "SELECT id, montant, date, etat, client, date_crea FROM Operation"
-        cur.execute(sql)
-        res = cur.fetchone()
+        try:
+            cur = conn.cursor()
+            sql = "SELECT id, montant, date, etat, client, date_crea FROM Operation"
+            cur.execute(sql)
+            res = cur.fetchone()
+        except psycopg2.errors.InFailedSqlTransaction as e:
+            print("message système : ", e)
         if res==None:
             print("/!\ AUCUNE OPÉRATION /!\\")
         while res:
@@ -671,7 +679,7 @@ except psycopg2.errors.DuplicateTable as e:
     print("message système : ", e)
 
 
-drop_table()   # pour supprimer les tables
+#drop_table()   # pour supprimer les tables
 
 
 
@@ -727,20 +735,31 @@ while choice!='0':
     if choice=='9':
         display_all_operation(conn)
     if choice=='10':
-        date = quote(input("\n date de création aaaa-mm-jj hh:mm = "))
-        cur = conn.cursor()
-        sql = "SELECT balance FROM compteepargne WHERE date_crea={} UNION SELECT balance FROM compterevolving WHERE date_crea={} UNION SELECT balance FROM comptecourant WHERE date_crea={}".format(date,date,date)
-        cur.execute(sql)
-        res = cur.fetchone()
-        print("\n## Le compte crée {} a {}€ de balance".format(date, res[0]))
+        try:
+            date = quote(input("\n date de création aaaa-mm-jj hh:mm = "))
+            cur = conn.cursor()
+            sql = "SELECT balance FROM compteepargne WHERE date_crea={} UNION SELECT balance FROM compterevolving WHERE date_crea={} UNION SELECT balance FROM comptecourant WHERE date_crea={}".format(date,date,date)
+            cur.execute(sql)
+            res = cur.fetchone()
+            print("\n## Le compte crée {} a {}€ de balance".format(date, res[0]))
+        except psycopg2.errors.InvalidDatetimeFormat as e:
+            print("message système : ", e)
+        except psycopg2.errors.DatetimeFieldOverflow as e:
+            print("message système : ", e)
+        except psycopg2.errors.InFailedSqlTransaction as e:
+            print("message système : ", e)
     if choice=='11':
-        client = quote(input("\n id(tel) du client : "))
-        cur = conn.cursor()
-        sql = "SELECT count(id) FROM Operation NATURAL JOIN EmissionCheque WHERE client={}".format(client)
-        cur.execute(sql)
-        res = cur.fetchone()
-        print("\n## Le client {} a émis {} chèques ".format(client, res[0]))
-
+        try:
+            client = quote(input("\n id(tel) du client : "))
+            cur = conn.cursor()
+            sql = "SELECT count(id) FROM Operation NATURAL JOIN EmissionCheque WHERE client={}".format(client)
+            cur.execute(sql)
+            res = cur.fetchone()
+            print("\n## Le client {} a émis {} chèques ".format(client, res[0]))
+        except psycopg2.errors.InFailedSqlTransaction as e:
+            print("message système : ", e)
+        except psycopg2.errors.InvalidTextRepresentation as e:
+            print("message système : ", e)
 
 
 # Clôture de la connexion
