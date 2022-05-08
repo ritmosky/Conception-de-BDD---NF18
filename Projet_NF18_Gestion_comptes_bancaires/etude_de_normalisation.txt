@@ -1,4 +1,3 @@
-
 DÉPENDANCES FONCTIONNELLES / NIVEAU DE NORMALISATION
 
 
@@ -75,4 +74,3 @@ Il n’y a pas d’autres dépendance car un client peut posséder plusieurs com
 - La relation est 1NF car tous les attributs sont atomiques.
 - Elle est 2NF car 1NF et aucune partie de clé ne détermine les attributs non clés.
 - Elle est 3NF car 2NF et tous les attributs non clés ne dépendent que des clés candidates.
-
