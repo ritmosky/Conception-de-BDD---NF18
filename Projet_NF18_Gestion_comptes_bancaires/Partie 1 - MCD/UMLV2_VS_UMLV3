@@ -3,3 +3,4 @@
 - plus d’attribut balance dans la classe Compte
 - on considère qu'un client n'a pas forcément de compte dans la banque. Un client peut être dans la - base de données sans être relié à un compte.
 - montant_decouvert_autorise dans ComtpeCourant peut être null
+- plus de méthode + operationPossible() : Bool dans Operation 
