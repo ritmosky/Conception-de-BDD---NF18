@@ -1,0 +1,7 @@
+
+Différence entre le MLD du rendu 2 et le MLD_V2 du rendu 3
+plus d’attribut balance dans la classe Compte
+nouvel attribut balance dans la classe CompteEpargne, CompteRevolving, CompteCourant
+balance < 0 dans CompteRevolving
+balance > montant_min dans CompteRevolving
+CarteBleu : plus de référence étrangère compteRevolving => CompteRevolving.date_crea, ni de référence étrangère compteCourant => CompteCourant.date_crea ; ces contraintes sont représentées dans l’applicatif python. Idem pour les autres classes filles de la classe Operation. Plus que l’attribut id pour CarteBleu, DebitGuichet, CreditGuichet, Virement, DepotCheque, EmissionCheque
