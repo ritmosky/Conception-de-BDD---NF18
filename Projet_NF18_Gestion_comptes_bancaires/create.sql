@@ -14,7 +14,6 @@ CREATE TABLE Compte (
     CHECK (statut='ouvert' OR statut='bloqué' OR statut='fermé') ,
 
     PRIMARY KEY (date_crea)
-
 );
 
 
@@ -49,6 +48,7 @@ CREATE TABLE CompteRevolving (
     CHECK (taux_j > 0 AND taux_j < 1),
     CHECK (montant_min < 0),
     CHECK (montant_min < balance),
+    CHECK (balance < 0),
     
     PRIMARY KEY(date_crea),
     FOREIGN KEY (date_crea) REFERENCES Compte(date_crea)
