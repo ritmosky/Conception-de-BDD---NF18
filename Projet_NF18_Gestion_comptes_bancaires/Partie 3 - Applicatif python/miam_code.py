@@ -182,8 +182,8 @@ def type_operation(id):
 # ajouter un client
 def add_customer(conn):
     print("\n ## Ajouter un client \n")
-    try: 
-        tel = int(input(" tel : ")) 
+    try:
+        tel = int(input(" tel : "))
     except ValueError as e:
         print("Message système : ",e)
         return
@@ -739,6 +739,7 @@ while choice!='0':
             date = quote(input("\n date de création aaaa-mm-jj hh:mm = "))
             cur = conn.cursor()
             sql = "SELECT balance FROM compteepargne WHERE date_crea={} UNION SELECT balance FROM compterevolving WHERE date_crea={} UNION SELECT balance FROM comptecourant WHERE date_crea={}".format(date,date,date)
+            # ou simplement avec "SELECT balance FROM {} WHERE date_crea={}".format(type_compte(date))
             cur.execute(sql)
             res = cur.fetchone()
             print("\n## Le compte crée {} a {}€ de balance".format(date, res[0]))
