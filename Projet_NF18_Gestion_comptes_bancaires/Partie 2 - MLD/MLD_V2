@@ -50,5 +50,3 @@ PROJECTION(Operation, id) = PROJECTION(CarteBleu, id) UNION PROJECTION(EmissionC
 Contraintes sur l’exclusivité de l’héritage :
 INTERSECTION (PROJECTION(CarteBleu, id), PROJECTION(EmissionCheque, id), PROJECTION(DepotCheque, id), PROJECTION(Virement, id), PROJECTION(CreditGuichet, id), PROJECTION(DebitGuichet, id)
 ) = {}
-Notes :
-Les classes filles de la classe Operation, soit CarteBleu, DebitGuichet, CreditGuichet, Virement, DepotCheque, EmissionCheque n’ont pas d’attribut les liant vers les différents comptes pouvant effectuer leurs opérations : exemple, un compteEpargne ne peut pas effectuer une opération CarteBleu. Ces contraintes seront représentées dans l’applicatif python.

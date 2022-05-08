@@ -1,0 +1,3 @@
+
+Notes :
+Les classes filles de la classe Operation, soit CarteBleu, DebitGuichet, CreditGuichet, Virement, DepotCheque, EmissionCheque n’ont pas d’attribut les liant vers les différents comptes pouvant effectuer leurs opérations : exemple, un compteEpargne ne peut pas effectuer une opération CarteBleu. Ces contraintes seront représentées dans l’applicatif python.
