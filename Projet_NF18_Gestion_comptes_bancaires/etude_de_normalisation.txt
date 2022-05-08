@@ -1,0 +1,78 @@
+
+DÉPENDANCES FONCTIONNELLES / NIVEAU DE NORMALISATION
+
+
+
+Client (tel, nom, adresse)
+
+tel -> nom 
+tel -> adresse
+
+Il n’y a aucune autre dépendance car il est possible que 2 personnes différentes aient le même nom ou que 2 personnes habitent la même adresse ou encore 2 personnes de même nom habitant la même adresse.
+
+- La relation n’est pas 1NF car tous les attributs ne sont pas atomiques(adresse est composite)
+- Ainsi, elle n’est ni 2NF, ni 3NF.
+
+
+
+Compte (date_crea, statut)
+
+date_crea -> statut 
+
+- La relation est 1NF car tous les attributs sont atomiques.
+- Elle est 2NF car 1NF et aucune partie de clé ne détermine les attributs non clés.
+- Elle est 3NF car 2NF et tous les attributs non clés ne dépendent que des clés candidates.
+
+
+
+CompteEpargne (date_crea, balance, solde_min_const)
+
+date_crea -> balance 
+date_crea -> solde_min_const 
+
+- La relation est 1NF car tous les attributs sont atomiques.
+- Elle est 2NF car 1NF et aucune partie de clé ne détermine les attributs non clés.
+- Elle est 3NF car 2NF et tous les attributs non clés ne dépendent que des clés candidates.
+
+
+
+CompteRevolving (date_crea, balance, taux_j, montant_min)
+
+date_crea -> balance 
+date_crea -> taux_j 
+date_crea -> montant_min 
+
+- La relation est 1NF car tous les attributs sont atomiques.
+- Elle est 2NF car 1NF et aucune partie de clé ne détermine les attributs non clés.
+- Elle est 3NF car 2NF et tous les attributs non clés ne dépendent que des clés candidates.
+
+
+
+CompteCourant (date_crea, balance, montant_decouvert_autorise, max_solde, min_solde, date_debut_decouvert)
+
+date_crea -> balance 
+date_crea -> montant_decouvert_autorise 
+date_crea -> max_solde 
+date_crea -> min_solde 
+date_crea -> date_debut_decouvert 
+
+- La relation est 1NF car tous les attributs sont atomiques.
+- Elle est 2NF car 1NF et aucune partie de clé ne détermine les attributs non clés.
+- Elle est 3NF car 2NF et tous les attributs non clés ne dépendent que des clés candidates.
+
+
+
+Operation (id, montant, date, etat, client, date_crea)
+
+id -> montant 
+id -> date 
+id -> etat
+id -> client 
+id -> date_crea 
+
+Il n’y a pas d’autres dépendance car un client peut posséder plusieurs comptes et un compte peut appartenir à plusieurs clients.
+
+- La relation est 1NF car tous les attributs sont atomiques.
+- Elle est 2NF car 1NF et aucune partie de clé ne détermine les attributs non clés.
+- Elle est 3NF car 2NF et tous les attributs non clés ne dépendent que des clés candidates.
+
