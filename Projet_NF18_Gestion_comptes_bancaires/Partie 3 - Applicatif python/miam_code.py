@@ -26,7 +26,7 @@ except psycopg2.OperationalError as e:
 ########## INITIALIZATION ##########
 
 
-# 'documents/school/utc/sem02/nf18/projet_nf18'
+# '/Users/taoufiq/Documents/school/Utc/sem02/NF18/nf18/Projet_NF18_Gestion_comptes_bancaires/SQL_et_Data'
 path = input('chemin du dossier où stocker les données(.../.../dossier) : ')
 
 
