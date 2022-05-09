@@ -1,5 +1,8 @@
 ########## AJOUTER ##########
 
+import psycopg2
+from constraintsEtDivers import *
+
 
 # ajouter un client
 def add_customer(conn):
@@ -18,21 +21,21 @@ def add_customer(conn):
         cur.execute(sql)
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
+    return tel
 
 
 
 # Ajouter un propriétaire à un compte
-def add_owner(conn):
-    print("\n ## Ajouter un propriétaire à un compte \n")
-    tel = int(input(" tel : "))
-    date_crea = quote(input(" date de création aaaa-mm-jj hh:mm:ss = "))
-
+def add_owner(conn, tel, date_crea):
+    print("\n ## Ajouter à un compte existant \n")
     try:
         cur = conn.cursor()
         sql = "INSERT INTO Asso_Compte_Client VALUES ({},{})".format(tel,date_crea)
         cur.execute(sql)
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
+
+
 
 def add_account_type(date_crea, type_c, c, conn):
     #Compte Epargne
@@ -79,8 +82,8 @@ def add_account_type(date_crea, type_c, c, conn):
 
 def add_account(conn):
     # ajouter un compte
-    print("\n ## Ajouter un compte \n")
-    date_crea = quote(input(" date de création aaaa-mm-jj hh:mm:ss = "))
+    print("\n ## Ajouter à un nouveau compte \n")
+    date_crea = quote(input(" date de création aaaa-mm-jj hh:mm:ss du compte = "))
     statut = quote(input(" statut(ouvert,bloqué ou fermé) : "))
     try:
         cur = conn.cursor()
@@ -108,6 +111,8 @@ def add_account(conn):
         add_account_type(date_crea, type_c, c, conn)
     else:
         print("\n /!\ Ce compte a déjà un type /!\ ")
+    return date_crea
+
 
 
 def add_operation_type(date, date_crea, id, montant, conn):
@@ -132,6 +137,7 @@ def add_operation_type(date, date_crea, id, montant, conn):
     else :  # si opération impossible
         print('\n ==> /!\ opération impossible /!\ <==  car :')
         print(restriction_type_operation(date_crea,num,conn)[1])
+
 
 
 def add_operation(conn):

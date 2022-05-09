@@ -1,25 +1,34 @@
 ########## CONNEXION ##########
 
 
+
 # bibliothèque
 # exécuter => pip install package_name pour installer un package
 import psycopg2
-import csv
-import glob
 import os.path
 
-from createDrop import create_table, drop_table
-from importCSV import import_data, save_csv
-from constraints import constraint_type_account, constraint_type_operation
-from update import *
+
+# se placer dans '/Users/taoufiq/Documents/school/Utc/sem02/NF18/nf18/Projet_NF18_Gestion_comptes_bancaires/python'
+os.chdir('/Users/taoufiq/Documents/school/Utc/sem02/NF18/nf18/Projet_NF18_Gestion_comptes_bancaires/python')
+
+
+from add_element import *
+from operation import *
 from display import *
-from insert import *
-from miscellaneous import type_operation, type_compte
+from create_drop_load_save import *
+from constraintsEtDivers import *
+
+
+# '/Users/taoufiq/Documents/school/Utc/sem02/NF18/nf18/Projet_NF18_Gestion_comptes_bancaires/SQL_et_Data'
+
+########## CONNEXION ##########
+
+
 
 HOST = "localhost"
-USER = "postgres"
-PASSWORD = "fort"
-DATABASE = "postgres"
+USER = "me"
+PASSWORD = "secret"
+DATABASE = "projetdb"
 
 
 try:
@@ -28,6 +37,7 @@ except psycopg2.ProgrammingError as e:
     print("message système : ", e)
 except psycopg2.OperationalError as e:
     print("message système : ", e)
+
 
 
 ########## MENU ##########
@@ -42,7 +52,7 @@ except psycopg2.errors.DuplicateTable as e:
     print("message système : ", e)
 
 
-#drop_table(conn)   # pour supprimer les tables
+# drop_table(conn)   # pour supprimer les tables
 
 
 try:
@@ -60,43 +70,54 @@ while choice!='0':
 
     print("\n ------------ MENU -----------")
     print(" 1. Ajouter un client")
-    print(" 2. Ajouter un compte et son type")
-    print(" 3. Ajouter un propriétaire à un compte")
-    print(" 4. Ajouter une opération et son type")
-    print(" 6. Afficher tous les clients")
-    print(" 7. Afficher tous les comptes")
-    print(" 8. Afficher tous les propriétaires")
-    print(" 9. Afficher toutes les opérations")
-
-    print(" 10. Afficher balance d'un compte")
-    print(" 11. Afficher nombre de chèques émis par un client")
+    print(" 2. Ajouter une opération et son type")
+    print(" 3. Afficher tous les clients")
+    print(" 4. Afficher tous les comptes")
+    print(" 5. Afficher tous les propriétaires")
+    print(" 6. Afficher toutes les opérations")
+    print(" 7. Afficher balance d'un compte")
+    print(" 8. Afficher nombre de chèques émis par un client")
     print(" -----------------------------\n")
     choice = input(" choix : ")
-    if choice=='1':
-        add_customer(conn)
+
+    if choice=='1':  # Ajouter un client
+        tel = add_customer(conn)
+        conn.commit()
+        print(" 1. Ajouter à un nouveau compte et son type")
+        print(" 2. Ajouter à un compte existant")
+        choice1 = input(" choix : ")
+
+        while choice1!='ok':
+            if choice1=='1': # Ajouter à un nouveau compte et son type
+                date_crea = add_account(conn, tel)
+                add_owner(conn, tel, date_crea)
+                choice1 = 'ok'
+            if choice=='2':   # Ajouter à un compte existant
+                quote(input(" date de création aaaa-mm-jj hh:mm:ss du compte = "))
+                add_owner(conn, tel, date_crea)
+                choice1 = 'ok'
         conn.commit()
         save_csv(path, conn)
-    if choice=='2':
-        add_account(conn)
-        conn.commit()
-        save_csv(path, conn)
-    if choice=='3':
-        add_owner(conn)
-        conn.commit()
-        save_csv(path, conn)
-    if choice=='4':
+
+
+    if choice=='2': # Ajouter une opération et son type
         add_operation(conn)
         conn.commit()
         save_csv(path, conn)
-    if choice=='6':
+
+    if choice=='3': # Afficher tous les clients
         display_all_customer(conn)
-    if choice=='7':
+
+    if choice=='4': # Afficher tous les comptes
         display_all_account(conn)
-    if choice=='8':
+
+    if choice=='5': # Afficher tous les propriétaires
         display_all_owner(conn)
-    if choice=='9':
+
+    if choice=='6': # Afficher toutes les opérations
         display_all_operation(conn)
-    if choice=='10':
+
+    if choice=='7': # Afficher balance d'un compte
         try:
             date = quote(input("\n date de création aaaa-mm-jj hh:mm = "))
             cur = conn.cursor()
@@ -111,7 +132,8 @@ while choice!='0':
             print("message système : ", e)
         except psycopg2.errors.InFailedSqlTransaction as e:
             print("message système : ", e)
-    if choice=='11':
+
+    if choice=='8': # Afficher nombre de chèques émis par un client
         try:
             client = quote(input("\n id(tel) du client : "))
             cur = conn.cursor()
@@ -123,6 +145,7 @@ while choice!='0':
             print("message système : ", e)
         except psycopg2.errors.InvalidTextRepresentation as e:
             print("message système : ", e)
+
 
 
 # Clôture de la connexion

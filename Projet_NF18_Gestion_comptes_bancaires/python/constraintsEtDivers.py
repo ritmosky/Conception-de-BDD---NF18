@@ -1,3 +1,57 @@
+
+import psycopg2
+
+########## FONCTIONS INTERMEDIAIRES ##########
+
+
+# dictionnaire des opérations
+ops = {
+"1": "DebitGuichet",
+"2": "CreditGuichet",
+"3": "Virement",
+"4": "DepotCheque",
+"5": "EmissionCheque",
+"6": "CarteBleu"
+}
+
+
+# pour insérer les chaînes de caractères dans les requêtes sql
+def quote(s):
+    if s:
+        return "\'%s\'" % s
+    else:
+        return 'NULL'
+
+
+# retrouver le type d'un compte
+def type_compte(date_crea, conn):
+    types = ["CompteCourant", "CompteRevolving", "CompteEpargne"]
+    try:
+        for type in types:
+            cur = conn.cursor()
+            sql = "SELECT COUNT(date_crea) FROM {} WHERE date_crea={}".format(type, date_crea)
+            cur.execute(sql)
+            res = cur.fetchone()
+            if res[0] != 0:
+                return type
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
+
+
+# retrouver le type d'une opération
+def type_operation(id, conn):
+    try:
+        for type in list(ops.values()):
+            cur = conn.cursor()
+            sql = "SELECT COUNT(id) FROM {} WHERE id={}".format(type, id)
+            cur.execute(sql)
+            res = cur.fetchone()
+            if res[0] != 0:
+                return type
+    except psycopg2.IntegrityError as e:
+        print("Message système : ",e)
+
+
 ########## COMPTES/CONTRAINTES_COMPTES ##########
 """
 ----> on verifie à chaque insertion si date_crea de la classe fille n'est pas
@@ -26,8 +80,6 @@ def constraint_type_account(date_crea, a_type, conn):
 
 
 ########## OPERATIONS/CONTRAINTES_OPERATIONS ##########
-
-
 """
 ----> compte ne peut pas effectuer plusieurs opérations en même temps
 ----> on verifie que id de la classe fille se trouve dans Compte et n'est pas dans les autres filles sinon execption
@@ -38,6 +90,7 @@ PROJECTION(Operation, id) = PROJECTION(CarteBleu, id) UNION
                             PROJECTION(CreditGuichet, id) UNION
                             PROJECTION(DebitGuichet, id)
 """
+
 
 def constraint_type_operation(date, date_crea, motif, id, conn):
     types = list(ops.values())
@@ -57,11 +110,9 @@ def constraint_type_operation(date, date_crea, motif, id, conn):
             res = cur.fetchone()
             if res[0]!=0 and res!=None:
                 return False
-
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
     return True
-
 
 
 """
@@ -70,6 +121,7 @@ def constraint_type_operation(date, date_crea, motif, id, conn):
 - compte fermé n'effectue aucune opération
 - compte bloqué n'effectue que des debits et crédits
 """
+
 
 def restriction_type_operation(date_crea, motif, conn):
     possible = True
@@ -94,6 +146,7 @@ def restriction_type_operation(date_crea, motif, conn):
     except psycopg2.IntegrityError as e:
         print("Message système : ",e)
     return possible, mssg
+
 
 # vérifie si le compte appartient au client
 def is_owner(tel, date_crea, conn):

@@ -1,6 +1,21 @@
 ########## Afficher ##########
 
-from miscellaneous import *
+from create_drop_load_save import *
+from constraintsEtDivers import *
+import psycopg2
+
+
+
+# dictionnaire des opérations
+ops = {
+"1": "DebitGuichet",
+"2": "CreditGuichet",
+"3": "Virement",
+"4": "DepotCheque",
+"5": "EmissionCheque",
+"6": "CarteBleu"
+}
+
 
 # afficher tous les clients
 def display_all_customer(conn):

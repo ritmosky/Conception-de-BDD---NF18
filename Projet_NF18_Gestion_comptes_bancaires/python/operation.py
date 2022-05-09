@@ -1,4 +1,6 @@
+
 ########## OPERATIONS ##########
+
 
 # on retire de l'argent (DebitGuichet, Virement, EmissionCheque, CarteBleue)
 def debiter(date_crea, motif, montant, conn):
@@ -83,7 +85,7 @@ def crediter(date_crea, motif, montant, conn):
     return False
 
 
-
+# hanger la valeur de l'état
 def deplacer(date_crea, id, motif, montant, conn):
     etat = quote('traité')
     effectue = False
@@ -98,6 +100,7 @@ def deplacer(date_crea, id, motif, montant, conn):
         cur = conn.cursor()
         sql = "UPDATE Operation SET etat={} WHERE date_crea={} AND id={}".format(etat, date_crea,id)
         cur.execute(sql)
+
 
 
 # les intérets sont ajoutés journalièrement à la balance du compteRevolving
