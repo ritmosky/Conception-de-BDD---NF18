@@ -2,11 +2,20 @@
 
 
 
-## Getting started
+## Lancer l'applicatif python :
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+1) cloner le repo ```$ git clone https://gitlab.utc.fr/touedrao/nf18.git```
+2) modifier la connexion à la BDD
+dans "Projet_NF18_Gestion_comptes_bancaires/Partie 3 - Applicatif python/miam_code.py" modifier la partie suivante avec les bonnes valeurs.
+```
+HOST = "localhost"
+USER = "postgres"
+PASSWORD = "fort"
+DATABASE = "postgres"
+```
+3) lancer la commande ```$ python3 miam_code.py```
+4) pour le chemin demandé, insérer ```../SQL_et_Data```
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
 
 ## Add your files
 
