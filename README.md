@@ -14,6 +14,7 @@ PASSWORD = "fort"
 DATABASE = "postgres"
 ```
 3) lancer la commande ```$ python3 miam_code.py```
+/!\ à se rendre dans le dossier contenant miam_code.py avant de le lancer /!\
 4) pour le chemin demandé, insérer ```../SQL_et_Data```
 
 
