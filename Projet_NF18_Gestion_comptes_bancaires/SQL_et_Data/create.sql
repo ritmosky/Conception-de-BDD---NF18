@@ -83,7 +83,6 @@ CREATE TABLE Operation (
     CHECK (etat='traité' OR etat='non traité'),
     CHECK (montant > 0),
 
-    UNIQUE(client, date_crea),
     PRIMARY KEY(id),
     FOREIGN KEY (client) REFERENCES Client(tel),
     FOREIGN KEY (date_crea) REFERENCES Compte(date_crea)
