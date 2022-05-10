@@ -10,38 +10,49 @@ import csv
 ########## CRÉATION/SUPPRESSION DES TABLES ##########
 
 
+
 path = input('chemin du dossier où stocker les données(.../.../dossier) : ')
 
 
 # create tables ->
 def create_table(conn):
     f = open(path+'/create.sql', 'r')
-    cur = conn.cursor()
-    sql_create = " ".join(f.readlines())
-    cur.execute(sql_create)
-    conn.commit()
-    print(" ==> création des tables effectuée ! <== ")
+    try:
+        cur = conn.cursor()
+        sql_create = " ".join(f.readlines())
+        cur.execute(sql_create)
+        conn.commit()
+        print(" ==> création des tables effectuée ! <== ")
+    except psycopg2.errors.UniqueViolation as e:
+        print("\n /!\ message erreur : {} /!\ ".format(e), sep="")
 
 
 
 # /!\/!\/!\ drop tables /!\/!\/!\
 def drop_table(conn):
     f = open(path+'/drop.sql', 'r')
-    cur = conn.cursor()
-    sql_drop = " ".join(f.readlines())
-    cur.execute(sql_drop)
-    conn.commit()
-    print(" ==> suppression des tables effectuée ! <== ")
+    try:
+        cur = conn.cursor()
+        sql_drop = " ".join(f.readlines())
+        cur.execute(sql_drop)
+        conn.commit()
+        print(" ==> suppression des tables effectuée ! <== ")
+    except psycopg2.errors.UniqueViolation as e:
+        print("\n /!\ message erreur : {} /!\ ".format(e), sep="")
 
 
 # charger un fichier d'insertion de données
 def insert_table(conn):
     f = open(path+'/insert.sql', 'r')
-    cur = conn.cursor()
-    sql_insert = " ".join(f.readlines())
-    cur.execute(sql_insert)
-    conn.commit()
-    print(" ==> insertion des données effectuée ! <== ")
+    try:
+        cur = conn.cursor()
+        sql_insert = " ".join(f.readlines())
+        cur.execute(sql_insert)
+        conn.commit()
+        print(" ==> insertion des données effectuée ! <== ")
+    except psycopg2.errors.UniqueViolation as e:
+        print("\n /!\ message erreur : {} /!\ ".format(e), sep="")
+
 
 
 ########## STRUCTURES DE DONNÉES ##########

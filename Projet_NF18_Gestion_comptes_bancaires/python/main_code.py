@@ -8,18 +8,14 @@ import psycopg2
 import os.path
 
 
-# se placer dans '/Users/taoufiq/Documents/school/Utc/sem02/NF18/nf18/Projet_NF18_Gestion_comptes_bancaires/python'
-os.chdir('/Users/taoufiq/Documents/school/Utc/sem02/NF18/nf18/Projet_NF18_Gestion_comptes_bancaires/python')
+# se placer dans le dossier contenant les fichier python
+path1 = input('\n dossier contenant les fichier python : ')
+os.chdir(path1)
 
 
 from add_element import *
-#from operation import *
 from display import *
-#from create_drop_load_save import *
-#from constraintsEtDivers import *
 
-
-# '/Users/taoufiq/Documents/school/Utc/sem02/NF18/nf18/Projet_NF18_Gestion_comptes_bancaires/SQL_et_Data'
 
 ########## CONNEXION ##########
 
@@ -44,23 +40,13 @@ except psycopg2.OperationalError as e:
 
 
 try:
-    drop_table(conn)   # pour supprimer les tables
+    drop_table(conn)    # pour supprimer les tables
     create_table(conn)  # pour créer les tables
     import_data(conn)   # pour importer des données à partir de fichiers csv
     insert_table(conn)  # pour insérer des données avec fichier sql
 except psycopg2.errors.InFailedSqlTransaction as e:
     print("message système : ", e)
 except psycopg2.errors.DuplicateTable as e:
-    print("message système : ", e)
-
-
-
-
-try:
-    conn = psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (HOST, DATABASE, USER, PASSWORD))
-except psycopg2.ProgrammingError as e:
-    print("message système : ", e)
-except psycopg2.OperationalError as e:
     print("message système : ", e)
 
 
