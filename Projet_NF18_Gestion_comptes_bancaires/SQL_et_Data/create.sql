@@ -77,13 +77,12 @@ CREATE TABLE Operation (
     montant FLOAT NOT NULL,
     date DATE NOT NULL,
     etat VARCHAR(11) NOT NULL,
-    client INT,
-    date_crea TIMESTAMP,
+    client INT NOT NULL,
+    date_crea TIMESTAMP NOT NULL,
 
     CHECK (etat='traité' OR etat='non traité'),
     CHECK (montant > 0),
 
-    UNIQUE(client, date_crea),
     PRIMARY KEY(id),
     FOREIGN KEY (client) REFERENCES Client(tel),
     FOREIGN KEY (date_crea) REFERENCES Compte(date_crea)

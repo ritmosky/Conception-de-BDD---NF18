@@ -90,8 +90,8 @@ INSERT INTO Asso_Compte_client VALUES (0642112376, '2022-03-04 11:02:30.45');
 INSERT INTO Operation VALUES (1, 300, '2022-05-09', 'non traité', 0665357620, '2021-05-03 06:14:00.75');
 INSERT INTO DebitGuichet VALUES (1);
 
---INSERT INTO Operation VALUES (2, 2000, '2022-05-09', 'non traité', 0665357620, '2021-05-03 06:14:00.75');
---INSERT INTO EmissionCheque VALUES(2);
+INSERT INTO Operation VALUES (2, 2000, '2022-05-09 20:12', 'non traité', 0764723098, '2021-10-23 11:21:49.32');
+INSERT INTO EmissionCheque VALUES(2);
 
 INSERT INTO Operation VALUES (3, 200, '2022-05-06', 'non traité', 0671307648, '2021-05-03 07:16:00.75');
 INSERT INTO CarteBleu VALUES (3);
@@ -102,10 +102,10 @@ INSERT INTO Virement VALUES (4);
 INSERT INTO Operation VALUES (5, 230.00, '2022-05-07', 'non traité', 0764723098, '2021-10-23 11:21:49.32');
 INSERT INTO EmissionCheque VALUES (5);
 
--- INSERT INTO Operation VALUES (6, 1100.00, '2022-05-03', 'non traité', 0764723098, '2021-10-23 11:21:49.32');
- --INSERT INTO EmissionCheque VALUES (6); //erreur avec UNIQUE dans la création de table : on ne peut pas avoir deux opérations sur un compte
+INSERT INTO Operation VALUES (6, 230.00, '2019-03-27', 'non traité', 0764723098, '2021-10-23 11:21:49.32');
+INSERT INTO EmissionCheque VALUES (6);
 
-INSERT INTO Operation VALUES (7, 100.00, '2022-05-03', 'traité', 0764723098, '2021-11-24 11:21:49.32');
+INSERT INTO Operation VALUES (7, 100.00, '2022-05-03', 'non traité', 0764723098, '2021-11-24 11:21:49.32');
 INSERT INTO EmissionCheque VALUES (7);
 
 INSERT INTO Operation VALUES (8, 50.00, '2022-05-02 10:00:23', 'non traité', 0655298443, '2020-01-27 15:34:32.02');
