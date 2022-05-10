@@ -44,15 +44,16 @@ except psycopg2.OperationalError as e:
 
 
 try:
+    drop_table(conn)   # pour supprimer les tables
     create_table(conn)  # pour créer les tables
-    import_data(conn)   # pour importer des données csv
+    # import_data(conn)   # pour importer des données à partir de fichiers csv
+    insert_table(conn)  # pour insérer des données avec fichier sql
 except psycopg2.errors.InFailedSqlTransaction as e:
     print("message système : ", e)
 except psycopg2.errors.DuplicateTable as e:
     print("message système : ", e)
 
 
-# drop_table(conn)   # pour supprimer les tables
 
 
 try:
