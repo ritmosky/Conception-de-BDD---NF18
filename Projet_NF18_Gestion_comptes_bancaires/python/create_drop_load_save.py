@@ -34,6 +34,16 @@ def drop_table(conn):
     print(" ==> suppression des tables effectuée ! <== ")
 
 
+# charger un fichier d'insertion de données
+def insert_table(conn):
+    f = open(path+'/insert.sql', 'r')
+    cur = conn.cursor()
+    sql_insert = " ".join(f.readlines())
+    cur.execute(sql_insert)
+    conn.commit()
+    print(" ==> insertion des données effectuée ! <== ")
+
+
 ########## STRUCTURES DE DONNÉES ##########
 
 
