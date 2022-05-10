@@ -2,6 +2,7 @@
 
 import psycopg2
 from constraintsEtDivers import *
+from operation import *
 
 
 # ajouter un client
@@ -117,16 +118,18 @@ def add_account(conn):
 
 def add_operation_type(date, date_crea, id, montant, conn):
     # Ajouter le type de l'opération
-    print(" ------------------ ")
-    print(" 1. Pour faire un retrait au guichet")
-    print(" 2. Pour faire un dépôt au guichet")
-    print(" 3. Pour faire virement")
-    print(" 4. Pour déposer de chèque")
-    print(" 5. Pour émettre un chèque")
-    print(" 6. Pour faire un retrait avec carte Bleue \n")
-    num = input(" choix : ")
+    num = '0'
+    while num not in ['1','2','3','4','5','6']:
+        print(" ------------------ ")
+        print(" 1. Pour faire un retrait au guichet")
+        print(" 2. Pour faire un dépôt au guichet")
+        print(" 3. Pour faire virement")
+        print(" 4. Pour déposer de chèque")
+        print(" 5. Pour émettre un chèque")
+        print(" 6. Pour faire un retrait avec carte Bleue \n")
+        num = input(" choix : ")
     if constraint_type_operation(date,date_crea,num,id,conn) and restriction_type_operation(date_crea,num,conn)[0]: # si opération possible
-        print('opération possible')
+        print('\n ==> opération possible <== ')
         try:
             cur = conn.cursor()
             sql = "INSERT INTO {} VALUES ({})".format(ops.get(num),id)
@@ -137,6 +140,7 @@ def add_operation_type(date, date_crea, id, montant, conn):
     else :  # si opération impossible
         print('\n ==> /!\ opération impossible /!\ <==  car :')
         print(restriction_type_operation(date_crea,num,conn)[1])
+    return num
 
 
 
@@ -150,7 +154,7 @@ def add_operation(conn):
     etat = quote('non traité')
     client = int(input(" tel du client : "))
     date_crea = quote(input(" date de création aaaa-mm-jj hh:mm:ss = "))
-    if is_owner(client,date_crea)[0]:  # compte appartient au client
+    if is_owner(client,date_crea, conn)[0]:  # compte appartient au client
         try:
             cur = conn.cursor()
             sql = "INSERT INTO Operation VALUES ({},{},{},{},{},{})".format(id,montant,date,etat,client,date_crea)
@@ -160,8 +164,8 @@ def add_operation(conn):
 
         type_account = 'Compte' + type_compte(date_crea, conn).capitalize()
         # Ajouter le type de l'opération
-        add_operation_type(date, date_crea, id, montant, conn)
-        deplacer(date_crea, id, motif, montant)
+        motif = add_operation_type(date, date_crea, id, montant, conn)
+        deplacer(date_crea, id, motif, montant, conn)
 
     else: # compte n'appartient pas au client
         print(is_owner(client,date_crea,conn)[1])

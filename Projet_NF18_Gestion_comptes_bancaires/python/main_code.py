@@ -13,10 +13,10 @@ os.chdir('/Users/taoufiq/Documents/school/Utc/sem02/NF18/nf18/Projet_NF18_Gestio
 
 
 from add_element import *
-from operation import *
+#from operation import *
 from display import *
-from create_drop_load_save import *
-from constraintsEtDivers import *
+#from create_drop_load_save import *
+#from constraintsEtDivers import *
 
 
 # '/Users/taoufiq/Documents/school/Utc/sem02/NF18/nf18/Projet_NF18_Gestion_comptes_bancaires/SQL_et_Data'
@@ -46,7 +46,7 @@ except psycopg2.OperationalError as e:
 try:
     drop_table(conn)   # pour supprimer les tables
     create_table(conn)  # pour créer les tables
-    # import_data(conn)   # pour importer des données à partir de fichiers csv
+    import_data(conn)   # pour importer des données à partir de fichiers csv
     insert_table(conn)  # pour insérer des données avec fichier sql
 except psycopg2.errors.InFailedSqlTransaction as e:
     print("message système : ", e)
@@ -84,13 +84,13 @@ while choice!='0':
     if choice=='1':  # Ajouter un client
         tel = add_customer(conn)
         conn.commit()
-        print(" 1. Ajouter à un nouveau compte et son type")
-        print(" 2. Ajouter à un compte existant")
-        choice1 = input(" choix : ")
-
-        while choice1!='ok':
+        choice1 = '0'
+        while choice1 not in ['1','2']:
+            print("\n 1. Ajouter à un nouveau compte et son type")
+            print(" 2. Ajouter à un compte existant")
+            choice1 = input("\n choix : ")
             if choice1=='1': # Ajouter à un nouveau compte et son type
-                date_crea = add_account(conn, tel)
+                date_crea = add_account(conn)
                 add_owner(conn, tel, date_crea)
                 choice1 = 'ok'
             if choice=='2':   # Ajouter à un compte existant

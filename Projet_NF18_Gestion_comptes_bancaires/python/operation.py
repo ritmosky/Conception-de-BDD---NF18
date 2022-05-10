@@ -1,4 +1,7 @@
 
+
+from constraintsEtDivers import *
+
 ########## OPERATIONS ##########
 
 
@@ -93,14 +96,13 @@ def deplacer(date_crea, id, motif, montant, conn):
     if motif in ['1', '3', '5', '6']:
         debiter(date_crea, motif, montant, conn)
         effectue = True
-    if motif in ['2', '4']:
+    elif motif in ['2', '4']:
         crediter(date_crea, motif, montant, conn)
         effectue = True
     if effectue==True:
         cur = conn.cursor()
         sql = "UPDATE Operation SET etat={} WHERE date_crea={} AND id={}".format(etat, date_crea,id)
         cur.execute(sql)
-
 
 
 # les intérets sont ajoutés journalièrement à la balance du compteRevolving
