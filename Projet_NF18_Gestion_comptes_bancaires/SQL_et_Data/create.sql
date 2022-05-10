@@ -77,8 +77,8 @@ CREATE TABLE Operation (
     montant FLOAT NOT NULL,
     date DATE NOT NULL,
     etat VARCHAR(11) NOT NULL,
-    client INT,
-    date_crea TIMESTAMP,
+    client INT NOT NULL,
+    date_crea TIMESTAMP NOT NULL,
 
     CHECK (etat='traité' OR etat='non traité'),
     CHECK (montant > 0),
