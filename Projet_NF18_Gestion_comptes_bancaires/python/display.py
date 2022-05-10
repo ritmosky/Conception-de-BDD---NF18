@@ -75,7 +75,7 @@ def display_all_owner(conn):
 
 # afficher toutes les opération
 def display_all_operation(conn):
-    print("\n ## afficher tous les propriétaires  \n")
+    print("\n ## Afficher tous les propriétaires  \n")
     try:
         try:
             cur = conn.cursor()
