@@ -90,7 +90,11 @@ INSERT INTO Asso_Compte_client VALUES (0642112376, '2022-03-04 11:02:30.45');
 INSERT INTO Operation VALUES (1, 300, '2022-05-09', 'non traité', 0665357620, '2021-05-03 06:14:00.75');
 INSERT INTO DebitGuichet VALUES (1);
 
+<<<<<<< HEAD:Projet_NF18_Gestion_comptes_bancaires/SQL_et_Data/insert.sql
 INSERT INTO Operation VALUES (2, 2000, '2022-05-09 20:12', 'non traité', 0764723098, '2021-10-23 11:21:49.32');
+=======
+INSERT INTO Operation VALUES (2, 2000, '2022-05-09 12:30', 'non traité', 0665357620, '2021-05-03 06:14:00.75');
+>>>>>>> d7c2b504b119952329e2fcfb4429f9d8df72f5cb:Projet_NF18_Gestion_comptes_bancaires/SQL_et_Data/insertion.sql
 INSERT INTO EmissionCheque VALUES(2);
 
 INSERT INTO Operation VALUES (3, 200, '2022-05-06', 'non traité', 0671307648, '2021-05-03 07:16:00.75');
@@ -102,7 +106,11 @@ INSERT INTO Virement VALUES (4);
 INSERT INTO Operation VALUES (5, 230.00, '2022-05-07', 'non traité', 0764723098, '2021-10-23 11:21:49.32');
 INSERT INTO EmissionCheque VALUES (5);
 
+<<<<<<< HEAD:Projet_NF18_Gestion_comptes_bancaires/SQL_et_Data/insert.sql
 INSERT INTO Operation VALUES (6, 230.00, '2019-03-27', 'non traité', 0764723098, '2021-10-23 11:21:49.32');
+=======
+INSERT INTO Operation VALUES (6, 1100.00, '2022-05-03', 'traité', 0764723098, '2021-10-23 11:21:49.32');
+>>>>>>> d7c2b504b119952329e2fcfb4429f9d8df72f5cb:Projet_NF18_Gestion_comptes_bancaires/SQL_et_Data/insertion.sql
 INSERT INTO EmissionCheque VALUES (6);
 
 INSERT INTO Operation VALUES (7, 100.00, '2022-05-03', 'non traité', 0764723098, '2021-11-24 11:21:49.32');
