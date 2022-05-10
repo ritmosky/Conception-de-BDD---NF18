@@ -56,7 +56,7 @@ def display_all_account(conn):
 
 # afficher tous les propriétaires
 def display_all_owner(conn):
-    print("\n ## afficher tous les propriétaires  \n")
+    print("\n ## Afficher tous les propriétaires  \n")
     try:
         cur = conn.cursor()
         sql = "SELECT tel, nom, date_crea FROM Asso_Compte_Client NATURAL JOIN Client"
