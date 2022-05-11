@@ -6,7 +6,7 @@
 
 1) cloner le repo ```$ git clone https://gitlab.utc.fr/touedrao/nf18.git```
 2) modifier la connexion à la BDD
-dans "Projet_NF18_Gestion_comptes_bancaires/Partie 3 - Applicatif python/miam_code.py" modifier la partie suivante avec les bonnes valeurs.
+dans "Projet_NF18_Gestion_comptes_bancaires/python/main_code.py" modifier la partie suivante avec les bonnes valeurs.
 ```
 HOST = "localhost"
 USER = "postgres"
