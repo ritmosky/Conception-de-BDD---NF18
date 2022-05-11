@@ -13,7 +13,10 @@ USER = "postgres"
 PASSWORD = "fort"
 DATABASE = "postgres"
 ```
-3) lancer la commande ```$ python3 miam_code.py```
+
+
+3) lancer la commande ```$ python3 main_code.py```
+
 /!\ à se rendre dans le dossier contenant miam_code.py avant de le lancer /!\
 4) pour le chemin demandé, insérer ```../SQL_et_Data```
 
@@ -35,10 +38,6 @@ Il contient :
 
 - un fichier txt pour l'étude de normalisation (PS: vraiment désolé de le rendre aussi tardivement, mais sur le site la date de son rendu n'était notifié à aucun endroit).
 
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
 
 ```
 cd existing_repo
