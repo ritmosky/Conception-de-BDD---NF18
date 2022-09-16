@@ -1,6 +1,0 @@
-DROP TABLE Trajet;
-DROP TABLE Bus;
-DROP TABLE Conducteur;
-DROP TABLE Arret;
-DROP TABLE Station;
-DROP TABLE Ligne;
